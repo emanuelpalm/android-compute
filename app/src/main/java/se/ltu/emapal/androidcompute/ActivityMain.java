@@ -7,7 +7,7 @@ import android.widget.TextView;
 @SuppressWarnings("JniMissingFunction")
 public class ActivityMain extends AppCompatActivity {
     static {
-        System.loadLibrary("jni_compute");
+        System.loadLibrary("compute");
     }
 
     @Override
