@@ -82,4 +82,8 @@ public class ComputeContext {
      * and string.
      */
     private native void registerLambda(int lambdaId, String program);
+
+    static {
+        System.loadLibrary("compute");
+    }
 }
