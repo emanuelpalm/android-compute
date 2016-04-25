@@ -1,4 +1,4 @@
-package se.ltu.emapal.androidcompute;
+package se.ltu.emapal.compute.client.android;
 
 import org.junit.Test;
 
