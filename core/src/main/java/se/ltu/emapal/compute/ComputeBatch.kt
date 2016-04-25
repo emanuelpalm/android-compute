@@ -7,7 +7,7 @@ package se.ltu.emapal.compute
  * @param batchId Batch identifier unique within the application.
  * @param data Arbitrary byte array to process.
  */
-class ComputeBatch(
+data class ComputeBatch(
         val lambdaId: Int,
         val batchId: Int,
         val data: ByteArray
