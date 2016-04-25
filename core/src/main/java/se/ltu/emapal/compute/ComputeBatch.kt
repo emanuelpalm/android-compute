@@ -8,7 +8,7 @@ package se.ltu.emapal.compute
  * @param data Arbitrary byte array to process.
  */
 class ComputeBatch(
-        lambdaId: Int,
-        batchId: Int,
-        data: ByteArray
+        val lambdaId: Int,
+        val batchId: Int,
+        val data: ByteArray
 )
