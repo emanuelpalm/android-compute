@@ -6,7 +6,7 @@ package se.ltu.emapal.compute
  * @param lambdaId Lambda identifier unique within the application.
  * @param program Lua program.
  */
-class ComputeLambda(
+data class ComputeLambda(
         val lambdaId: Int,
         val program: String
 )
