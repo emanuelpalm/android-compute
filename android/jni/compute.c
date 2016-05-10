@@ -81,6 +81,9 @@ JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBa
         ComputeContext_throwIllegalStateException(env, "Compute Context state not available.");
         return NULL;
     }
+    if ((*env)->ExceptionCheck(env)) {
+        return NULL;
+    }
     // Process batch.
     int code;
     {
@@ -103,6 +106,9 @@ JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBa
         });
         (*env)->ReleaseByteArrayElements(env, data, bytes, 0);
     }
+    if ((*env)->ExceptionCheck(env)) {
+        return NULL;
+    }
     // Report result.
     {
         jstring message = (*env)->NewStringUTF(env, lcm_errstr(code));
@@ -124,6 +130,9 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(
         ComputeContext_throwIllegalStateException(env, "Compute Context state not available.");
         return;
     }
+    if ((*env)->ExceptionCheck(env)) {
+        return;
+    }
     // Register lambda.
     int code;
     {
@@ -140,6 +149,9 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(
             },
         });
         (*env)->ReleaseStringUTFChars(env, program, lua);
+    }
+    if ((*env)->ExceptionCheck(env)) {
+        return;
     }
     // Report result.
     {
@@ -176,6 +188,9 @@ static void ComputeContext_batch(void* context, const lcm_Batch* batch) {
     JNIEnv *env = state->call.env;
     jobject self = state->call.self;
 
+    if ((*env)->ExceptionCheck(env)) {
+        return;
+    }
     jbyteArray result = (*env)->NewByteArray(env, batch->data.length);
     if (result == NULL) {
         ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for batch result.");
