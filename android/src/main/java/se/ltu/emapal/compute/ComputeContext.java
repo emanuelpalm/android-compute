@@ -5,6 +5,7 @@ import se.ltu.emapal.compute.util.Result;
 /**
  * A context useful for executing Lua programs.
  */
+@SuppressWarnings("JniMissingFunction")
 public class ComputeContext {
     private static final Result.Success<Void, ComputeError> SUCCESS = new Result.Success<>(null);
     private final Object lock = new Object();
