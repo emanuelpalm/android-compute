@@ -8,7 +8,7 @@ import se.ltu.emapal.compute.util.Result;
 /**
  * A context useful for executing Lua programs.
  */
-@SuppressWarnings("JniMissingFunction")
+@SuppressWarnings({"JniMissingFunction", "unused"})
 public class ComputeContext implements Closeable {
     private static final Result.Success<Void, ComputeError> SUCCESS = new Result.Success<>(null);
     private final Object lock = new Object();
@@ -22,7 +22,6 @@ public class ComputeContext implements Closeable {
     /**
      * Pointer to state managed by native methods.
      */
-    @SuppressWarnings("unused")
     private long nativePtr = 0;
 
     /**
