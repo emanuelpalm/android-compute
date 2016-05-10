@@ -3,6 +3,8 @@ package se.ltu.emapal.compute;
 import java.io.Closeable;
 import java.io.IOException;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import se.ltu.emapal.compute.util.Result;
 
 /**
@@ -11,6 +13,8 @@ import se.ltu.emapal.compute.util.Result;
 @SuppressWarnings({"JniMissingFunction", "unused"})
 public class ComputeContext implements Closeable {
     private static final Result.Success<Void, ComputeError> SUCCESS = new Result.Success<>(null);
+
+    private final PublishSubject<ComputeLogEntry> logEntryPublishSubject = PublishSubject.create();
     private final Object lock = new Object();
 
     /**
@@ -60,6 +64,14 @@ public class ComputeContext implements Closeable {
         }
     }
 
+    /**
+     * Observable pushing new log entries whenever the {@code lcm:log()} function is called by an
+     * executed lambda.
+     */
+    public Observable<ComputeLogEntry> WhenLogEntry() {
+        return logEntryPublishSubject;
+    }
+
     @Override
     public void close() throws IOException {
         destroy();
@@ -81,7 +93,7 @@ public class ComputeContext implements Closeable {
      * Called by Lua context when lambda invokes log function.
      */
     private void onLog(final int lambdaId, final int batchId, final String message) {
-        System.out.println("LAMBDA " + lambdaId + "\nBATCH " + batchId + "\n\t" + message);
+        logEntryPublishSubject.onNext(new ComputeLogEntry(lambdaId, batchId, message));
     }
 
     /**
