@@ -52,6 +52,7 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_construct(JNIEn
     }
     state->L = (lua_State*) luaL_newstate();
     if (state->L == NULL) {
+        free(state);
         ComputeContext_throwIllegalStateException(env, "Failed to create Lua state context.");
         return;
     }
@@ -74,7 +75,13 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_destroy(JNIEnv 
 }
 
 JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBatch(JNIEnv *env, jobject self, jint lambdaId, jint batchId, jbyteArray data) {
+    // Load state.
     ComputeContextState *state = ComputeContextState_load(env, self);
+    if (state == NULL) {
+        ComputeContext_throwIllegalStateException(env, "Compute Context state not available.");
+        return NULL;
+    }
+    // Process batch.
     int code;
     {
         jbyte* bytes = (*env)->GetByteArrayElements(env, data, NULL);
@@ -96,19 +103,28 @@ JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBa
         });
         (*env)->ReleaseByteArrayElements(env, data, bytes, 0);
     }
-    jstring message = (*env)->NewStringUTF(env, lcm_errstr(code));
-    if (message == NULL) {
-        ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for batch result message.");
-        return NULL;
+    // Report result.
+    {
+        jstring message = (*env)->NewStringUTF(env, lcm_errstr(code));
+        if (message == NULL) {
+            ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for batch result message.");
+            return NULL;
+        }
+        jbyteArray result = state->result.data;
+        state->result.data = NULL;
+        (*env)->CallVoidMethod(env, self, state->call.onResultMethodID, code, message);
+        return result;
     }
-    (*env)->CallVoidMethod(env, self, state->call.onResultMethodID, code, message);
-    jbyteArray result = state->result.data;
-    state->result.data = NULL;
-    return result;
 }
 
 JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(JNIEnv *env, jobject self, jint lambdaId, jstring program) {
+    // Load state.
     ComputeContextState *state = ComputeContextState_load(env, self);
+    if (state == NULL) {
+        ComputeContext_throwIllegalStateException(env, "Compute Context state not available.");
+        return;
+    }
+    // Register lambda.
     int code;
     {
         const char *lua = (*env)->GetStringUTFChars(env, program, NULL);
@@ -125,12 +141,15 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(
         });
         (*env)->ReleaseStringUTFChars(env, program, lua);
     }
-    jstring message = (*env)->NewStringUTF(env, lcm_errstr(code));
-    if (message == NULL) {
-        ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for register result message.");
-        return;
+    // Report result.
+    {
+        jstring message = (*env)->NewStringUTF(env, lcm_errstr(code));
+        if (message == NULL) {
+            ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for register result message.");
+            return;
+        }
+        (*env)->CallVoidMethod(env, self, state->call.onResultMethodID, code, message);
     }
-    (*env)->CallVoidMethod(env, self, state->call.onResultMethodID, code, message);
 }
 
 static ComputeContextState *ComputeContextState_load(JNIEnv *env, jobject self) {
@@ -153,9 +172,9 @@ static void ComputeContextState_save(JNIEnv *env, jobject self, const ComputeCon
 }
 
 static void ComputeContext_batch(void* context, const lcm_Batch* batch) {
-    const ComputeContextState state = *((ComputeContextState*) context);
-    JNIEnv *env = state.call.env;
-    jobject self = state.call.self;
+    ComputeContextState *state = (ComputeContextState*) context;
+    JNIEnv *env = state->call.env;
+    jobject self = state->call.self;
 
     jbyteArray result = (*env)->NewByteArray(env, batch->data.length);
     if (result == NULL) {
@@ -170,20 +189,21 @@ static void ComputeContext_batch(void* context, const lcm_Batch* batch) {
     memcpy(bytes, batch->data.bytes, batch->data.length);
     (*env)->ReleaseByteArrayElements(env, result, bytes, 0);
 
-    ((ComputeContextState*) context)->result.data = result;
+    state->result.data = result;
 }
 
 static void ComputeContext_log(void* context, const lcm_LogEntry* entry) {
-    const ComputeContextState state = *((ComputeContextState*) context);
-    JNIEnv *env = state.call.env;
-    jobject self = state.call.self;
-    jmethodID onLogMethodID = state.call.onLogMethodID;
+    const ComputeContextState *state = (ComputeContextState*) context;
+    JNIEnv *env = state->call.env;
+    jobject self = state->call.self;
+    jmethodID onLogMethodID = state->call.onLogMethodID;
 
     jstring message = (*env)->NewStringUTF(env, entry->message.string);
     if (message == NULL) {
         ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for log message.");
         return;
     }
+
     (*env)->CallVoidMethod(env, self, onLogMethodID, entry->lambda_id, entry->batch_id, message);
 }
 
