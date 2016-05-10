@@ -5,7 +5,6 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import se.ltu.emapal.compute.util.Result
-import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 @RunWith(AndroidJUnit4::class)
