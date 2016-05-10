@@ -160,7 +160,7 @@ static ComputeContextState *ComputeContextState_load(JNIEnv *env, jobject self) 
         state->call.env = env;
         state->call.self = self;
         state->call.onResultMethodID = (*env)->GetMethodID(env, clazz, "onResult", "(ILjava/lang/String;)V");
-        state->call.onLogMethodID = (*env)->GetMethodID(env, clazz, "onLog", "(JJLjava/lang/String;)V");
+        state->call.onLogMethodID = (*env)->GetMethodID(env, clazz, "onLog", "(IILjava/lang/String;)V");
     }
     return state;
 }

@@ -80,7 +80,7 @@ public class ComputeContext implements Closeable {
     /**
      * Called by Lua context when lambda invokes log function.
      */
-    private void onLog(final long lambdaId, final long batchId, final String message) {
+    private void onLog(final int lambdaId, final int batchId, final String message) {
         System.out.println("LAMBDA " + lambdaId + "\nBATCH " + batchId + "\n\t" + message);
     }
 
