@@ -132,7 +132,7 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(
             ComputeContext_throwIllegalStateException(env, "Failed get program UTF-8 chars.");
             return;
         }
-        code = lcm_register(state->L, (lcm_Lambda) {
+        code = lcm_register(state->L, (lcm_Lambda){
             .lambda_id = lambdaId,
             .program = {
                 .lua = (uint8_t*)lua,
@@ -203,7 +203,6 @@ static void ComputeContext_log(void* context, const lcm_LogEntry* entry) {
         ComputeContext_throwOutOfMemoryError(env, "Failed to allocate memory for log message.");
         return;
     }
-
     (*env)->CallVoidMethod(env, self, onLogMethodID, entry->lambda_id, entry->batch_id, message);
 }
 
