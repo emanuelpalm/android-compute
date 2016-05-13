@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/view_vertical_margin"
+    android:layout_marginLeft="@dimen/view_horizontal_margin"
+    android:layout_marginRight="@dimen/view_horizontal_margin"
+    android:layout_marginTop="@dimen/view_vertical_margin"
+    android:background="@drawable/region"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/view_vertical_padding"
+    android:paddingLeft="@dimen/view_horizontal_padding"
+    android:paddingRight="@dimen/view_horizontal_padding"
+    android:paddingTop="@dimen/view_vertical_padding">
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_connect_to_master_service" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_vertical_padding"
+        android:text="@string/text_connect_description" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_vertical_margin"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/text_uri"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/label_master_service_uri_ip"
+            android:inputType="textUri" />
+
+        <Button
+            android:id="@+id/button_connect"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_vertical_padding"
+            android:layout_marginStart="@dimen/view_vertical_padding"
+            android:drawableEnd="@drawable/ic_sync_white_18dp"
+            android:drawablePadding="@dimen/view_horizontal_padding"
+            android:drawableRight="@drawable/ic_sync_white_18dp"
+            android:text="@string/action_connect" />
+
+    </LinearLayout>
+
+</LinearLayout>

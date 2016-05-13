@@ -9,8 +9,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".ActivityMain">
 
-    <TextView
-        android:id="@+id/text_hello"
-        android:layout_width="wrap_content"
+    <se.ltu.emapal.compute.client.android.view.ViewConnector
+        android:id="@+id/view_connector"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </RelativeLayout>
