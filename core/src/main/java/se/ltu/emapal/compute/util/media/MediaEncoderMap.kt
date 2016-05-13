@@ -35,7 +35,7 @@ interface MediaEncoderMap {
     fun add(key: String, value: (MediaEncoder) -> Unit): MediaEncoderMap
 
     /** Adds [MediaEncodable] value to list. */
-    fun add(key: String, value: MediaEncodable): MediaEncoderMap = add(key, { value.encode(it) })
+    fun add(key: String, value: MediaEncodable): MediaEncoderMap = add(key, { value.encodable(it) })
 
     /** Adds named list of values to map. */
     fun addList(key: String, encoder: (MediaEncoderList) -> Unit): MediaEncoderMap
@@ -44,7 +44,7 @@ interface MediaEncoderMap {
     fun addList(key: String, list: Collection<MediaEncodable>): MediaEncoderMap {
         return addList(key, { encoder ->
             list.forEach { element ->
-                encoder.add { element.encode(it) }
+                encoder.add { element.encodable(it) }
             }
         })
     }
@@ -56,7 +56,7 @@ interface MediaEncoderMap {
     fun addMap(key: String, map: Map<String, MediaEncodable>): MediaEncoderMap {
         return addMap(key, { encoder ->
             map.entries.forEach { entry ->
-                encoder.add(entry.key, { entry.value.encode(it) })
+                encoder.add(entry.key, { entry.value.encodable(it) })
             }
         })
     }

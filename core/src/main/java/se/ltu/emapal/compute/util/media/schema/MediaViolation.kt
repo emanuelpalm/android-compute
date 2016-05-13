@@ -3,8 +3,6 @@ package se.ltu.emapal.compute.util.media.schema
 import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncoder
 
-import java.util.Objects
-
 /**
  * A [MediaSchema] violation.
  *
@@ -16,9 +14,11 @@ data class MediaViolation(
         val requirement: MediaRequirement
 ) : MediaEncodable {
 
-    override fun encode(encoder: MediaEncoder) = encoder.encodeMap({
-        it
-                .add("entity", entity)
-                .add("requirement", requirement)
-    })
+    override val encodable: (MediaEncoder) -> Unit = {
+        it.encodeMap({
+            it
+                    .add("entity", entity)
+                    .add("requirement", requirement)
+        })
+    }
 }

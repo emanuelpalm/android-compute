@@ -120,13 +120,9 @@ class TestJsonMediaEncoder {
         }, "[{\"a\":1,\"b\":2},{\"c\":2,\"b\":3}]")
     }
 
-    private fun encode(encodable: (MediaEncoder) -> Unit, expectedOutput: String) {
+    private fun encode(encoder: (MediaEncoder) -> Unit, expectedOutput: String) {
         val outputStream = ByteArrayOutputStream()
-        val result = JsonMediaConverter.encode(object : MediaEncodable {
-            override fun encode(encoder: MediaEncoder) {
-                encodable.invoke(encoder)
-            }
-        }, outputStream)
+        val result = JsonMediaConverter.encode(encoder, outputStream)
         when (result) {
             is Result.Success -> assertEquals(expectedOutput, outputStream.toByteArray().toString(StandardCharsets.UTF_8))
             is Result.Failure -> throw result.error

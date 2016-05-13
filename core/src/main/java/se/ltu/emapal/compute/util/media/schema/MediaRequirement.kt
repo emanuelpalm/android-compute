@@ -19,16 +19,18 @@ class MediaRequirement(
         val name: String,
         vararg val parameters: Any
 ) : MediaEncodable {
+    constructor(name: String, vararg parameters: Any) : this({ true }, name, parameters)
 
-    constructor(name: String, vararg parameters: Any) : this ({ true }, name, parameters)
-
-    override fun encode(encoder: MediaEncoder) = encoder.encodeMap {
-        it.addList(name, { list ->
-            parameters.forEach { parameter ->
-                list.add(parameter.toString())
+    override val encodable: (MediaEncoder) -> Unit
+        get() = {
+            it.encodeMap {
+                it.addList(name, { list ->
+                    parameters.forEach { parameter ->
+                        list.add(parameter.toString())
+                    }
+                })
             }
-        })
-    }
+        }
 
     override fun toString() = "MediaRequirement(name=$name, parameters=[${parameters.joinToString()}])"
 

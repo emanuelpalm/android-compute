@@ -31,11 +31,11 @@ interface MediaSchema : MediaEncodable {
 
         /** Schema requirements. */
         protected val requirements: Set<MediaRequirement>
-                get() = mutableRequirements
+            get() = mutableRequirements
 
         /** Whether or not schema entity is optional. */
         protected val isOptional: Boolean
-                get() = mutableIsOptional
+            get() = mutableIsOptional
 
         /** Sets whether or not value is optional. Defaults to `false`.  */
         fun setOptional(isOptional: Boolean = true): T {
@@ -64,7 +64,7 @@ interface MediaSchema : MediaEncodable {
         }
 
         /** Validates identified value.  */
-        protected open fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
+        internal open fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
             val violations = ArrayList<MediaViolation>(4)
             if (value == null) {
                 if (!mutableIsOptional) {
@@ -81,9 +81,10 @@ interface MediaSchema : MediaEncodable {
             return violations
         }
 
-        override fun encode(encoder: MediaEncoder) {
-            encoder.encodeMap({ this.encodeRequirements(it) })
-        }
+        override val encodable: (MediaEncoder) -> Unit
+            get () = {
+                it.encodeMap({ encodeRequirements(it) })
+            }
 
         /** Encodes entity requirements into given map.  */
         protected fun encodeRequirements(mapEncoder: MediaEncoderMap) {
@@ -108,24 +109,33 @@ interface MediaSchema : MediaEncodable {
      * [MediaDecoder] null type schema.
      */
     class TypeNull : TypeEntity<TypeNull>() {
-        override val type = MediaDecoder.Type.NULL
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.NULL
+
+        override val self: TypeNull
+            get () = this
     }
 
     /**
      * [MediaDecoder] boolean type schema.
      */
     class TypeBoolean : TypeEntity<TypeBoolean>() {
-        override val type = MediaDecoder.Type.BOOLEAN
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.BOOLEAN
+
+        override val self: TypeBoolean
+            get () = this
     }
 
     /**
      * [MediaDecoder] number type schema.
      */
     class TypeNumber : TypeEntity<TypeNumber>() {
-        override val type = MediaDecoder.Type.NUMBER
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.NUMBER
+
+        override val self: TypeNumber
+            get () = this
 
         /** Requires number to be equal to or larger than provided minimum.  */
         fun setMinimum(minimum: Long): TypeNumber {
@@ -172,8 +182,11 @@ interface MediaSchema : MediaEncodable {
      * [MediaDecoder] text type schema.
      */
     class TypeText : TypeEntity<TypeText>() {
-        override val type = MediaDecoder.Type.TEXT
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.TEXT
+
+        override val self: TypeText
+            get () = this
 
         /** Requires text to match given regular expression.  */
         fun setRegex(regex: Regex): TypeText {
@@ -190,8 +203,11 @@ interface MediaSchema : MediaEncodable {
      * [MediaDecoder] BLOB type schema.
      */
     class TypeBlob : TypeEntity<TypeBlob>() {
-        override val type = MediaDecoder.Type.BLOB
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.BLOB
+
+        override val self: TypeBlob
+            get () = this
 
         /** Requires BLOB to match the given byte size. */
         fun setSize(size: Int): TypeBlob {
@@ -206,8 +222,11 @@ interface MediaSchema : MediaEncodable {
         private val schemaMap = TreeMap<Int, TypeEntity<*>>()
         private var schemaDefault: TypeEntity<*>? = null
 
-        override val type = MediaDecoder.Type.LIST
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.LIST
+
+        override val self: TypeList
+            get () = this
 
         /** Sets schema to apply only to list element at specified index offset.  */
         fun schemaElement(index: Int, schema: TypeEntity<*>): TypeList {
@@ -238,22 +257,23 @@ interface MediaSchema : MediaEncodable {
             return add(MediaRequirement({ value -> value.toList().size === size }, "size", size))
         }
 
-        override fun encode(encoder: MediaEncoder) {
-            encoder.encodeMap({ mapEncoder ->
-                encodeRequirements(mapEncoder)
-                if (!schemaMap.isEmpty()) {
-                    mapEncoder.addMap("elements", { elements ->
-                        schemaMap.entries.forEach({ entry ->
-                            elements.add("" + entry.key, entry.value)
+        override val encodable: (MediaEncoder) -> Unit
+            get () = {
+                it.encodeMap({
+                    encodeRequirements(it)
+                    if (!schemaMap.isEmpty()) {
+                        it.addMap("elements", { elements ->
+                            schemaMap.entries.forEach({ entry ->
+                                elements.add("" + entry.key, entry.value)
+                            })
                         })
-                    })
-                }
-                val realSchemaDefault = schemaDefault
-                if (realSchemaDefault != null) {
-                    mapEncoder.add("default", realSchemaDefault)
-                }
-            })
-        }
+                    }
+                    val realSchemaDefault = schemaDefault
+                    if (realSchemaDefault != null) {
+                        it.add("default", realSchemaDefault)
+                    }
+                })
+            }
 
         override fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
             val violations = super.verify(entity, value)
@@ -284,8 +304,11 @@ interface MediaSchema : MediaEncodable {
         private val schemaMap = TreeMap<String, TypeEntity<*>>()
         private var schemaDefault: TypeEntity<*>? = null
 
-        override val type = MediaDecoder.Type.MAP
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.MAP
+
+        override val self: TypeMap
+            get () = this
 
         /** Sets schema applied only to map entry with specified key.  */
         fun schemaEntry(key: String, schema: TypeEntity<*>): TypeMap {
@@ -316,11 +339,11 @@ interface MediaSchema : MediaEncodable {
             return add(MediaRequirement({ value -> value.toMap().size === size }, "size", size))
         }
 
-        override fun encode(encoder: MediaEncoder) {
-            encoder.encodeMap({ mapEncoder ->
-                encodeRequirements(mapEncoder)
+        override val encodable: (MediaEncoder) -> Unit = {
+            it.encodeMap({ it ->
+                encodeRequirements(it)
                 if (!schemaMap.isEmpty()) {
-                    mapEncoder.addMap("entry", { entries ->
+                    it.addMap("entry", { entries ->
                         schemaMap.entries.forEach({ entry ->
                             entries.add(entry.key, entry.value)
                         })
@@ -328,7 +351,7 @@ interface MediaSchema : MediaEncodable {
                 }
                 val realSchemaDefault = schemaDefault
                 if (realSchemaDefault != null) {
-                    mapEncoder.add("default", realSchemaDefault)
+                    it.add("default", realSchemaDefault)
                 }
             })
         }
@@ -359,8 +382,11 @@ interface MediaSchema : MediaEncodable {
      * [MediaDecoder] schema, representing no particular type.
      */
     class TypeAny : TypeEntity<TypeAny>() {
-        override val type = MediaDecoder.Type.UNDEFINED
-        override val self = this
+        override val type: MediaDecoder.Type
+            get () = MediaDecoder.Type.UNDEFINED
+
+        override val self: TypeAny
+            get () = this
     }
 
     companion object {
