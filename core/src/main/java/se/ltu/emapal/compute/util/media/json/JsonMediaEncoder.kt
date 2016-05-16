@@ -16,17 +16,20 @@ internal class JsonMediaEncoder(
         private val generator: JsonGenerator
 ) : MediaEncoder, MediaEncoderList, MediaEncoderMap, Closeable {
 
-    private fun writeNumber(value: Number) {
-        when (value) {
-            is BigDecimal -> generator.writeNumber(value)
-            is Double -> generator.writeNumber(value)
-            is Float -> generator.writeNumber(value)
+    private fun writeNumber(value: Number?) {
+        if (value != null)
+            when (value) {
+                is BigDecimal -> generator.writeNumber(value)
+                is Double -> generator.writeNumber(value)
+                is Float -> generator.writeNumber(value)
 
-            is BigInteger -> generator.writeNumber(value)
-            is Long -> generator.writeNumber(value)
-            is Int -> generator.writeNumber(value)
-            is Short -> generator.writeNumber(value)
-        }
+                is BigInteger -> generator.writeNumber(value)
+                is Long -> generator.writeNumber(value)
+                is Int -> generator.writeNumber(value)
+                is Short -> generator.writeNumber(value)
+            }
+        else
+            generator.writeNull()
     }
 
     override fun encodeList(encoder: (MediaEncoderList) -> Unit) {
@@ -46,22 +49,25 @@ internal class JsonMediaEncoder(
         return this
     }
 
-    override fun add(value: Boolean): MediaEncoderList {
-        generator.writeBoolean(value)
+    override fun add(value: Boolean?): MediaEncoderList {
+        if (value != null)
+            generator.writeBoolean(value)
+        else
+            generator.writeNull()
         return this
     }
 
-    override fun add(value: Number): MediaEncoderList {
+    override fun add(value: Number?): MediaEncoderList {
         writeNumber(value)
         return this
     }
 
-    override fun add(value: String): MediaEncoderList {
+    override fun add(value: String?): MediaEncoderList {
         generator.writeString(value)
         return this
     }
 
-    override fun add(value: ByteArray): MediaEncoderList {
+    override fun add(value: ByteArray?): MediaEncoderList {
         generator.writeBinary(value)
         return this
     }
@@ -90,23 +96,27 @@ internal class JsonMediaEncoder(
         return this
     }
 
-    override fun add(key: String, value: Boolean): MediaEncoderMap {
-        generator.writeBooleanField(key, value)
+    override fun add(key: String, value: Boolean?): MediaEncoderMap {
+        generator.writeFieldName(key)
+        if (value != null)
+            generator.writeBoolean(value)
+        else
+            generator.writeNull()
         return this
     }
 
-    override fun add(key: String, value: Number): MediaEncoderMap {
+    override fun add(key: String, value: Number?): MediaEncoderMap {
         generator.writeFieldName(key)
         writeNumber(value)
         return this
     }
 
-    override fun add(key: String, value: String): MediaEncoderMap {
+    override fun add(key: String, value: String?): MediaEncoderMap {
         generator.writeStringField(key, value)
         return this
     }
 
-    override fun add(key: String, value: ByteArray): MediaEncoderMap {
+    override fun add(key: String, value: ByteArray?): MediaEncoderMap {
         generator.writeBinaryField(key, value)
         return this
     }

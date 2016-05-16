@@ -8,22 +8,22 @@ interface MediaEncoderList {
     fun addNull(): MediaEncoderList
 
     /** Adds `boolean` value to list. */
-    fun add(value: Boolean): MediaEncoderList
+    fun add(value: Boolean?): MediaEncoderList
 
     /** Adds [Number] value to list. */
-    fun add(value: Number): MediaEncoderList
+    fun add(value: Number?): MediaEncoderList
 
     /** Adds [String] value to list. */
-    fun add(value: String): MediaEncoderList
+    fun add(value: String?): MediaEncoderList
 
     /** Adds [ByteArray] value to list. */
-    fun add(value: ByteArray): MediaEncoderList
+    fun add(value: ByteArray?): MediaEncoderList
 
     /** Adds value to list via provided lambda. */
     fun add(value: (MediaEncoder) -> Unit): MediaEncoderList
 
     /** Adds [MediaEncodable] value to list. */
-    fun add(value: MediaEncodable) = add { value.encodable(it) }
+    fun add(value: MediaEncodable?) = add { value?.encodable?.invoke(it) }
 
     /** Adds list of values to list. */
     fun addList(encoder: (MediaEncoderList) -> Unit): MediaEncoderList

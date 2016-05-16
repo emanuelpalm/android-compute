@@ -8,22 +8,22 @@ interface MediaEncoderMap {
     fun addNull(key: String): MediaEncoderMap
 
     /** Adds named `boolean` value to map. */
-    fun add(key: String, value: Boolean): MediaEncoderMap
+    fun add(key: String, value: Boolean?): MediaEncoderMap
 
     /** Adds named [Number] value to map. */
-    fun add(key: String, value: Number): MediaEncoderMap
+    fun add(key: String, value: Number?): MediaEncoderMap
 
     /** Adds named [String] value to map. */
-    fun add(key: String, value: String): MediaEncoderMap
+    fun add(key: String, value: String?): MediaEncoderMap
 
     /** Adds named [ByteArray] value to list. */
-    fun add(key: String, value: ByteArray): MediaEncoderMap
+    fun add(key: String, value: ByteArray?): MediaEncoderMap
 
     /** Adds value to list via provided consumer lambda. */
     fun add(key: String, value: (MediaEncoder) -> Unit): MediaEncoderMap
 
     /** Adds [MediaEncodable] value to list. */
-    fun add(key: String, value: MediaEncodable): MediaEncoderMap = add(key, { value.encodable(it) })
+    fun add(key: String, value: MediaEncodable?): MediaEncoderMap = add(key, { value?.encodable?.invoke(it) })
 
     /** Adds named list of values to map. */
     fun addList(key: String, encoder: (MediaEncoderList) -> Unit): MediaEncoderMap
