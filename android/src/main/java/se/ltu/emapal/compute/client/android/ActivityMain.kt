@@ -11,22 +11,26 @@ class ActivityMain : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        view_connector.onConnect.subscribe { uri ->
-            Snackbar.make(
-                    view_connector,
-                    applicationContext.getString(R.string.text_connected_to_s, uri),
-                    Snackbar.LENGTH_LONG
-            ).show()
-            view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
-        }
+        view_connector.listener?.let {
 
-        view_connector.onDisconnect.subscribe { uri ->
-            Snackbar.make(
-                    view_connector,
-                    applicationContext.getString(R.string.text_disconnected_from_s, uri),
-                    Snackbar.LENGTH_LONG
-            ).show()
-            view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+            it.onConnect.subscribe { uri ->
+                Snackbar.make(
+                        view_connector,
+                        applicationContext.getString(R.string.text_connected_to_s, uri),
+                        Snackbar.LENGTH_LONG
+                ).show()
+                view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
+            }
+
+            it.onDisconnect.subscribe { uri ->
+                Snackbar.make(
+                        view_connector,
+                        applicationContext.getString(R.string.text_disconnected_from_s, uri),
+                        Snackbar.LENGTH_LONG
+                ).show()
+                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+            }
+
         }
     }
 }

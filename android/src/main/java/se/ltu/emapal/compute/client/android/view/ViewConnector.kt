@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_connector.view.*
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
-import rx.subjects.PublishSubject
 import rx.subjects.ReplaySubject
 import se.ltu.emapal.compute.client.android.R
 
@@ -25,21 +24,8 @@ class ViewConnector : LinearLayout {
     /** Context/attribute/style constructor. */
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val onConnectSubject: PublishSubject<String>? = if (isInEditMode) null else PublishSubject()
-    private val onDisconnectSubject: PublishSubject<String>? = if (isInEditMode) null else PublishSubject()
-    private val onStateChangeSubject: ReplaySubject<State>? = if (isInEditMode) null else ReplaySubject.createWithSize(1)
-
-    /** Fires event containing URI field value whenever the connect button is clicked. */
-    val onConnect: Observable<String>
-        get() = onConnectSubject ?: Observable.create { }
-
-    /** Fires event containing URI field value whenever the disconnect button is clicked. */
-    val onDisconnect: Observable<String>
-        get() = onDisconnectSubject ?: Observable.create { }
-
-    /** Fires current state and any subsequent [ViewConnector.State] changes. */
-    val onStateChange: Observable<State>
-        get() = onStateChangeSubject ?: Observable.create { }
+    /** Exposes [ViewConnector] events. */
+    val listener: Listener? = if (!isInEditMode) Listener() else null
 
     init {
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE).let {
@@ -56,43 +42,47 @@ class ViewConnector : LinearLayout {
         }
         button_connect.setOnClickListener { triggerAction() }
 
-        onStateChangeSubject?.onNext(State.SHOW_CONNECT)
-        onStateChange
-                .subscribe { state ->
-                    when (state) {
-                        State.SHOW_CONNECT -> {
-                            text_connect_title.visibility = VISIBLE
-                            text_connect_description.visibility = VISIBLE
-                            field_uri.isEnabled = true
-                            button_connect.isEnabled = true
-                            button_connect.text = context.getText(R.string.action_connect)
-                        }
-                        State.SHOW_CONNECTING -> {
-                            field_uri.isEnabled = false
-                            button_connect.isEnabled = false
-                        }
-                        State.SHOW_DISCONNECT -> {
-                            text_connect_title.visibility = GONE
-                            text_connect_description.visibility = GONE
-                            field_uri.isEnabled = false
-                            button_connect.isEnabled = true
-                            button_connect.text = context.getText(R.string.action_disconnect)
-                        }
-                        else -> throw IllegalStateException("Bad ViewConnector state: $state.")
+        listener?.onStateChangeSubject?.let {
+            it.onNext(State.SHOW_CONNECT)
+            it.subscribe { state ->
+                when (state) {
+                    State.SHOW_CONNECT -> {
+                        text_connect_title.visibility = VISIBLE
+                        text_connect_description.visibility = VISIBLE
+                        field_uri.isEnabled = true
+                        button_connect.isEnabled = true
+                        button_connect.text = context.getText(R.string.action_connect)
                     }
+                    State.SHOW_CONNECTING -> {
+                        field_uri.isEnabled = false
+                        button_connect.isEnabled = false
+                    }
+                    State.SHOW_DISCONNECT -> {
+                        text_connect_title.visibility = GONE
+                        text_connect_description.visibility = GONE
+                        field_uri.isEnabled = false
+                        button_connect.isEnabled = true
+                        button_connect.text = context.getText(R.string.action_disconnect)
+                    }
+                    else -> throw IllegalStateException("Bad ViewConnector state: $state.")
                 }
+            }
+        }
     }
 
     private fun triggerAction() {
-        when (onStateChangeSubject?.value) {
-            State.SHOW_CONNECT -> onConnectSubject?.onNext(field_uri.text.toString())
-            State.SHOW_DISCONNECT -> onDisconnectSubject?.onNext(field_uri.text.toString())
-            else -> throw IllegalStateException("Action triggered while in ${onStateChangeSubject?.value} state.")
+        listener?.let {
+            val state = it.onStateChangeSubject.value
+            when (state) {
+                State.SHOW_CONNECT -> it.onConnectSubject.onNext(field_uri.text.toString())
+                State.SHOW_DISCONNECT -> it.onDisconnectSubject.onNext(field_uri.text.toString())
+                else -> throw IllegalStateException("Action triggered while in $state state.")
+            }
         }
     }
 
     fun setState(state: State) {
-        onStateChangeSubject?.onNext(state)
+        listener?.onStateChangeSubject?.onNext(state)
     }
 
     /**
@@ -102,5 +92,27 @@ class ViewConnector : LinearLayout {
         SHOW_CONNECT,
         SHOW_CONNECTING,
         SHOW_DISCONNECT
+    }
+
+    class Listener {
+        internal val onConnectSubject = PublishSubject<String>()
+        internal val onConnectingSubject = PublishSubject<String>()
+        internal val onDisconnectSubject = PublishSubject<String>()
+        internal val onStateChangeSubject = ReplaySubject.createWithSize<State>(1)
+
+        /** Fires event containing URI field value whenever the connect button is clicked. */
+        val onConnect: Observable<String>
+            get() = onConnectSubject
+
+        val onConnecting: Observable<String>
+            get() = onConnectingSubject
+
+        /** Fires event containing URI field value whenever the disconnect button is clicked. */
+        val onDisconnect: Observable<String>
+            get() = onDisconnectSubject
+
+        /** Fires current state and any subsequent [ViewConnector.State] changes. */
+        val onStateChange: Observable<State>
+            get() = onStateChangeSubject
     }
 }
