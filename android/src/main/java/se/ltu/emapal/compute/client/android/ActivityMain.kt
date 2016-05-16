@@ -14,7 +14,7 @@ class ActivityMain : AppCompatActivity() {
 
         view_connector.listener?.let {
 
-            it.onConnect.subscribe { uri ->
+            it.whenConnect.subscribe { uri ->
                 Snackbar.make(
                         view_connector,
                         applicationContext.getString(R.string.text_connected_to_s, uri),
@@ -31,7 +31,7 @@ class ActivityMain : AppCompatActivity() {
                         .start()
             }
 
-            it.onDisconnect.subscribe { uri ->
+            it.whenDisconnect.subscribe { uri ->
                 Snackbar.make(
                         view_connector,
                         applicationContext.getString(R.string.text_disconnected_from_s, uri),

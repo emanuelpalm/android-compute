@@ -96,23 +96,15 @@ class ViewConnector : LinearLayout {
 
     class Listener {
         internal val onConnectSubject = PublishSubject<String>()
-        internal val onConnectingSubject = PublishSubject<String>()
         internal val onDisconnectSubject = PublishSubject<String>()
         internal val onStateChangeSubject = ReplaySubject.createWithSize<State>(1)
 
         /** Fires event containing URI field value whenever the connect button is clicked. */
-        val onConnect: Observable<String>
+        val whenConnect: Observable<String>
             get() = onConnectSubject
 
-        val onConnecting: Observable<String>
-            get() = onConnectingSubject
-
         /** Fires event containing URI field value whenever the disconnect button is clicked. */
-        val onDisconnect: Observable<String>
+        val whenDisconnect: Observable<String>
             get() = onDisconnectSubject
-
-        /** Fires current state and any subsequent [ViewConnector.State] changes. */
-        val onStateChange: Observable<State>
-            get() = onStateChangeSubject
     }
 }
