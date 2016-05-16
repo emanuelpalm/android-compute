@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.view_connector.view.*
 import rx.Observable
+import rx.lang.kotlin.PublishSubject
 import rx.subjects.PublishSubject
 import se.ltu.emapal.compute.client.android.R
 
@@ -24,11 +25,11 @@ class ViewConnector : LinearLayout {
     /** Context/attribute/style constructor. */
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val onConnectSubject = PublishSubject.create<String>()
+    private val onConnectSubject: PublishSubject<String>? = if (isInEditMode) null else PublishSubject()
 
     /** Fires event containing URI field value whenever the connect button is clicked. */
     val onConnect: Observable<String>
-        get() = onConnectSubject
+        get() = onConnectSubject ?: Observable.create { }
 
     init {
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE).let {
@@ -37,14 +38,14 @@ class ViewConnector : LinearLayout {
         }
         text_uri.setOnKeyListener { view, code, event ->
             if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER) {
-                onConnectSubject.onNext((view as EditText).text.toString())
+                onConnectSubject?.onNext((view as EditText).text.toString())
                 true
             } else {
                 false
             }
         }
         button_connect.setOnClickListener {
-            onConnectSubject.onNext(text_uri.text.toString())
+            onConnectSubject?.onNext(text_uri.text.toString())
         }
     }
 }
