@@ -1,5 +1,6 @@
 package se.ltu.emapal.compute.util.media.schema
 
+import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
 import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncoder
@@ -13,8 +14,8 @@ import java.util.*
  * A schema used for verifying the shape of some [MediaDecoder].
  */
 interface MediaSchema : MediaEncodable {
-    /** Validates given value and produces report.  */
-    fun verify(value: MediaDecoder): MediaReport
+    /** Validates and returns given value, if validation is successful.  */
+    fun verify(value: MediaDecoder): Result<MediaDecoder, MediaSchemaException>
 
     /**
      * Base class for [MediaDecoder] schemas.
@@ -283,8 +284,13 @@ interface MediaSchema : MediaEncodable {
             }.flatten()
         }
 
-        override fun verify(value: MediaDecoder): MediaReport {
-            return MediaReport(verify("", value))
+        override fun verify(value: MediaDecoder): Result<MediaDecoder, MediaSchemaException> {
+            verify("", value).let { violations ->
+                return if (violations.size == 0)
+                    Result.Success(value)
+                else
+                    Result.Failure(MediaSchemaException(violations))
+            }
         }
     }
 
@@ -364,8 +370,13 @@ interface MediaSchema : MediaEncodable {
             }.flatten()
         }
 
-        override fun verify(value: MediaDecoder): MediaReport {
-            return MediaReport(verify("", value))
+        override fun verify(value: MediaDecoder): Result<MediaDecoder, MediaSchemaException> {
+            verify("", value).let { violations ->
+                return if (violations.size == 0)
+                    Result.Success(value)
+                else
+                    Result.Failure(MediaSchemaException(violations))
+            }
         }
     }
 
