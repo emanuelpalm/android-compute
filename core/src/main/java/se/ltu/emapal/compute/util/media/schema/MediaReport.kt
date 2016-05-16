@@ -9,8 +9,10 @@ import se.ltu.emapal.compute.util.media.MediaEncoder
  * @param violations All schema violations discovered while verifying some media decoder.
  */
 data class MediaReport(
-        val violations: Collection<MediaViolation>
+        val violations: List<MediaViolation>
 ) : MediaEncodable {
+    constructor(vararg violations: MediaViolation) : this(listOf(*violations))
+
     /** Whether or not the media decoder reported on is valid.  */
     val isValid: Boolean
         get() = violations.size == 0
@@ -19,9 +21,8 @@ data class MediaReport(
         get() = {
             it.encodeMap {
                 it
-                        .addList("violations", violations)
                         .add("is_valid", isValid)
+                        .addList("violations", violations)
             }
         }
-
 }

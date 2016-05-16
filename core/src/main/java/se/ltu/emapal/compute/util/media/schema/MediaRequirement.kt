@@ -14,12 +14,14 @@ import java.util.Objects
  * The name and parameters have no impact on the execution of the predicate, and thus don't effect
  * the outcome of requirement evaluation.
  */
-class MediaRequirement(
+class MediaRequirement private constructor(
         val predicate: (MediaDecoder) -> Boolean,
         val name: String,
-        vararg val parameters: Any
+        val parameters: List<String>
 ) : MediaEncodable {
-    constructor(name: String, vararg parameters: Any) : this({ true }, name, parameters)
+    constructor(name: String, vararg parameters: Any?) : this({ true }, name, listOf(*parameters).map { it.toString() })
+
+    constructor(predicate: (MediaDecoder) -> Boolean, name: String, vararg parameters: Any?) : this(predicate, name, listOf(*parameters).map { it.toString() })
 
     override val encodable: (MediaEncoder) -> Unit
         get() = {

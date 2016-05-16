@@ -34,19 +34,29 @@ object JsonMediaConverter {
         }
     }
 
-    /** Encodes provided value into returned byte array, if successful. */
-    fun encode(encoder: (MediaEncoder) -> Unit): Result<ByteArray, IOException> {
+    /** Encodes provided encodable into returned byte array, if successful. */
+    fun encode(encodable: MediaEncodable): Result<ByteArray, IOException> {
+        return encode(encodable.encodable)
+    }
+
+    /** Encodes provided encodable into returned byte array, if successful. */
+    fun encode(encodable: (MediaEncoder) -> Unit): Result<ByteArray, IOException> {
         ByteArrayOutputStream().use { output ->
-            return encode(encoder, output)
+            return encode(encodable, output)
                     .map { output.toByteArray() }
         }
     }
 
-    /** Encodes provided value, writing any results to output stream. */
-    fun encode(encoder: (MediaEncoder) -> Unit, output: OutputStream): Result<Void?, IOException> {
+    /** Encodes provided encodable, writing any results to output stream. */
+    fun encode(encodable: MediaEncodable, output: OutputStream): Result<Void?, IOException> {
+        return encode(encodable.encodable, output)
+    }
+
+    /** Encodes provided encodable, writing any results to output stream. */
+    fun encode(encodable: (MediaEncoder) -> Unit, output: OutputStream): Result<Void?, IOException> {
         try {
             JsonMediaEncoder(factory.createGenerator(output)).use { encoder ->
-                encoder(encoder)
+                encodable(encoder)
             }
             return Result.Success(null)
 

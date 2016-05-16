@@ -20,26 +20,18 @@ interface MediaSchema : MediaEncodable {
      * Base class for [MediaDecoder] schemas.
      */
     abstract class TypeEntity<T> : MediaEncodable {
-        private val mutableRequirements = TreeSet<MediaRequirement>({ a, b -> a.name.compareTo(b.name) })
-        private var mutableIsOptional = false
+        private val requirements = TreeSet<MediaRequirement>({ a, b -> a.name.compareTo(b.name) })
+        private var isOptional = false
 
-        /** Expected entity media type.  */
+        /** Expected name media type.  */
         protected abstract val type: MediaDecoder.Type
 
         /** Concrete type reference.  */
         protected abstract val self: T
 
-        /** Schema requirements. */
-        protected val requirements: Set<MediaRequirement>
-            get() = mutableRequirements
-
-        /** Whether or not schema entity is optional. */
-        protected val isOptional: Boolean
-            get() = mutableIsOptional
-
         /** Sets whether or not value is optional. Defaults to `false`.  */
         fun setOptional(isOptional: Boolean = true): T {
-            this.mutableIsOptional = isOptional
+            this.isOptional = isOptional
             return self
         }
 
@@ -57,26 +49,26 @@ interface MediaSchema : MediaEncodable {
         fun add(requirement: MediaRequirement): T {
             assert(requirement.name != "type" && requirement.name != "optional")
 
-            if (!mutableRequirements.add(requirement)) {
+            if (!requirements.add(requirement)) {
                 throw IllegalArgumentException("Requirement with name '" + requirement.name + "' already provided.")
             }
             return self
         }
 
         /** Validates identified value.  */
-        internal open fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
+        internal open fun verify(name: String, value: MediaDecoder?): List<MediaViolation> {
             val violations = ArrayList<MediaViolation>(4)
             if (value == null) {
-                if (!mutableIsOptional) {
-                    violations.add(MediaViolation(entity, REQUIREMENT_OPTIONAL_FALSE))
+                if (!isOptional) {
+                    violations.add(MediaViolation(name, REQUIREMENT_OPTIONAL_FALSE))
                 }
             } else if (type !== MediaDecoder.Type.UNDEFINED && value.type !== type) {
-                violations.add(MediaViolation(entity, MediaRequirement("type", type)))
+                violations.add(MediaViolation(name, MediaRequirement("type", type)))
 
             } else {
                 requirements
                         .filter { !it.predicate(value) }
-                        .forEach({ violations.add(MediaViolation(entity, it)) })
+                        .forEach({ violations.add(MediaViolation(name, it)) })
             }
             return violations
         }
@@ -86,11 +78,11 @@ interface MediaSchema : MediaEncodable {
                 it.encodeMap({ encodeRequirements(it) })
             }
 
-        /** Encodes entity requirements into given map.  */
+        /** Encodes name requirements into given map.  */
         protected fun encodeRequirements(mapEncoder: MediaEncoderMap) {
             mapEncoder
                     .add("type", type.toString())
-                    .add("optional", mutableIsOptional)
+                    .add("optional", isOptional)
 
             if (requirements.size > 0) {
                 mapEncoder.addList("requirements", { list ->
@@ -101,7 +93,6 @@ interface MediaSchema : MediaEncodable {
 
         companion object {
             protected val REQUIREMENT_OPTIONAL_FALSE = MediaRequirement("optional", "false")
-            protected val REQUIREMENT_EXPECTED_TRUE = MediaRequirement("expected", "true")
         }
     }
 
@@ -190,12 +181,12 @@ interface MediaSchema : MediaEncodable {
 
         /** Requires text to match given regular expression.  */
         fun setRegex(regex: Regex): TypeText {
-            return add(MediaRequirement({ value -> regex.matches(value.toText()) }, "regex", regex.pattern))
+            return add(MediaRequirement({ value -> regex.matches(value.toText()) }, "regex", regex))
         }
 
         /** Requires text to match given regular expression.  */
         fun setRegex(regex: String): TypeText {
-            return setRegex(Regex.fromLiteral(regex))
+            return setRegex(Regex(regex))
         }
     }
 
@@ -275,19 +266,19 @@ interface MediaSchema : MediaEncodable {
                 })
             }
 
-        override fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
-            val violations = super.verify(entity, value)
+        override fun verify(name: String, value: MediaDecoder?): List<MediaViolation> {
+            val violations = super.verify(name, value)
             if (violations.size > 0) {
                 return violations
             }
             val list = value!!.toList()
-            return (0..list.size).map {
-                val elementEntity = "$entity[$it]"
+            return ((0..(list.size - 1)).toSet() + schemaMap.keys).map {
+                val elementName = "$name[$it]"
                 val schema = schemaMap.getOrElse(it, { schemaDefault })
                 if (schema == null) {
-                    listOf(MediaViolation(elementEntity, MediaRequirement("expected", "true")))
+                    listOf(MediaViolation(elementName, MediaRequirement("expected", "false")))
                 } else {
-                    schema.verify(elementEntity, list[it])
+                    schema.verify(elementName, list.getOrNull(it))
                 }
             }.flatten()
         }
@@ -356,19 +347,19 @@ interface MediaSchema : MediaEncodable {
             })
         }
 
-        override fun verify(entity: String, value: MediaDecoder?): Collection<MediaViolation> {
-            val violations = super.verify(entity, value)
+        override fun verify(name: String, value: MediaDecoder?): List<MediaViolation> {
+            val violations = super.verify(name, value)
             if (violations.size > 0) {
                 return violations
             }
             val map = value!!.toMap()
-            return map.map { entry ->
-                val entryEntity = "$entity.${entry.key}"
-                val schema = schemaMap.getOrElse(entry.key, { schemaDefault })
+            return (map.keys + schemaMap.keys).map { key ->
+                val entryName = (if (name.length > 0) "$name." else "") + "$key"
+                val schema = schemaMap.getOrElse(key, { schemaDefault })
                 if (schema == null) {
-                    listOf(MediaViolation(entryEntity, MediaRequirement("expected", "true")))
+                    listOf(MediaViolation(entryName, MediaRequirement("expected", "false")))
                 } else {
-                    schema.verify(entryEntity, entry.value)
+                    schema.verify(entryName, map[key])
                 }
             }.flatten()
         }
@@ -405,6 +396,7 @@ interface MediaSchema : MediaEncodable {
         /** Creates new [MediaSchema] verifying strings.  */
         fun typeText(): TypeText = TypeText()
 
+        /** Creates new [MediaSchema] verifying BLOBs.  */
         fun typeBlob(): TypeBlob = TypeBlob()
 
         /** Creates new [MediaSchema] verifying lists.  */
