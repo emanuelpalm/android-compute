@@ -39,7 +39,6 @@ class UnixTime private constructor(private val milliseconds: Long) {
 
     override fun toString(): String = toDate().toString()
 
-
     companion object {
         /** Gets current time. */
         fun now() = ofMilliseconds(System.currentTimeMillis())
