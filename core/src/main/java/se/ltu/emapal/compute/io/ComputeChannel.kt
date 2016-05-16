@@ -18,6 +18,9 @@ import java.nio.channels.Channel
 /**
  * Manages communication between one compute client and one compute service.
  *
+ * All messages are copied on and off a single 32 Mb buffer. No message may exceed that size, or an
+ * exception is thrown.
+ *
  * @param encoder Function used to encode messages.
  * @param decoder Function used to decode messages.
  * @param byteChannel Channel used for communication.
@@ -89,6 +92,14 @@ class ComputeChannel(
         }
     }
 
-    override fun isOpen() = byteChannel.isOpen
-    override fun close() = byteChannel.close()
+    override fun isOpen(): Boolean {
+        synchronized(buffer) {
+            return byteChannel.isOpen
+        }
+    }
+    override fun close() {
+        synchronized(buffer) {
+            byteChannel.close()
+        }
+    }
 }
