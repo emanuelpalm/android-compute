@@ -1,6 +1,6 @@
 package se.ltu.emapal.compute.util.media.schema
 
-import se.ltu.emapal.compute.util.media.MediaEncodable
+import se.ltu.emapal.compute.util.media.MediaEncodableException
 import se.ltu.emapal.compute.util.media.MediaEncoder
 
 /**
@@ -10,7 +10,7 @@ import se.ltu.emapal.compute.util.media.MediaEncoder
  */
 class MediaSchemaException(
         val violations: List<MediaViolation>
-) : RuntimeException("Media schema violated."), MediaEncodable {
+) : MediaEncodableException("Media schema violated.") {
 
     /** Constructs new media schema error from given violations. */
     constructor(vararg violations: MediaViolation) : this (listOf(*violations))
