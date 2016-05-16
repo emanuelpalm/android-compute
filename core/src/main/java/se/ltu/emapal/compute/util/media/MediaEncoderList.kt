@@ -1,8 +1,5 @@
 package se.ltu.emapal.compute.util.media
 
-import java.math.BigDecimal
-import java.math.BigInteger
-
 /**
  * Media entity list encoder.
  */
@@ -13,17 +10,8 @@ interface MediaEncoderList {
     /** Adds `boolean` value to list. */
     fun add(value: Boolean): MediaEncoderList
 
-    /** Adds `long` value to list. */
-    fun add(value: Long): MediaEncoderList
-
-    /** Adds [BigInteger] value to list. */
-    fun add(value: BigInteger): MediaEncoderList
-
-    /** Adds `double` value to list. */
-    fun add(value: Double): MediaEncoderList
-
-    /** Adds [BigDecimal] value to list. */
-    fun add(value: BigDecimal): MediaEncoderList
+    /** Adds [Number] value to list. */
+    fun add(value: Number): MediaEncoderList
 
     /** Adds [String] value to list. */
     fun add(value: String): MediaEncoderList

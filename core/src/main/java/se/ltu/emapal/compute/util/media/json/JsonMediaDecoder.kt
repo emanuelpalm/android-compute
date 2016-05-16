@@ -1,7 +1,6 @@
 package se.ltu.emapal.compute.util.media.json
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.JsonNodeType
 import se.ltu.emapal.compute.util.media.MediaDecoder
 

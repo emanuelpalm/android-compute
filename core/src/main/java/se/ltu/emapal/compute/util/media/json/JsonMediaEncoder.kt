@@ -16,6 +16,19 @@ internal class JsonMediaEncoder(
         private val generator: JsonGenerator
 ) : MediaEncoder, MediaEncoderList, MediaEncoderMap, Closeable {
 
+    private fun writeNumber(value: Number) {
+        when (value) {
+            is BigDecimal -> generator.writeNumber(value)
+            is Double -> generator.writeNumber(value)
+            is Float -> generator.writeNumber(value)
+
+            is BigInteger -> generator.writeNumber(value)
+            is Long -> generator.writeNumber(value)
+            is Int -> generator.writeNumber(value)
+            is Short -> generator.writeNumber(value)
+        }
+    }
+
     override fun encodeList(encoder: (MediaEncoderList) -> Unit) {
         generator.writeStartArray()
         encoder.invoke(this)
@@ -38,23 +51,8 @@ internal class JsonMediaEncoder(
         return this
     }
 
-    override fun add(value: Long): MediaEncoderList {
-        generator.writeNumber(value)
-        return this
-    }
-
-    override fun add(value: BigInteger): MediaEncoderList {
-        generator.writeNumber(value)
-        return this
-    }
-
-    override fun add(value: Double): MediaEncoderList {
-        generator.writeNumber(value)
-        return this
-    }
-
-    override fun add(value: BigDecimal): MediaEncoderList {
-        generator.writeNumber(value)
+    override fun add(value: Number): MediaEncoderList {
+        writeNumber(value)
         return this
     }
 
@@ -97,23 +95,9 @@ internal class JsonMediaEncoder(
         return this
     }
 
-    override fun add(key: String, value: Long): MediaEncoderMap {
-        generator.writeNumberField(key, value)
-        return this
-    }
-
-    override fun add(key: String, value: BigInteger): MediaEncoderMap {
-        generator.writeNumberField(key, BigDecimal(value))
-        return this
-    }
-
-    override fun add(key: String, value: Double): MediaEncoderMap {
-        generator.writeNumberField(key, value)
-        return this
-    }
-
-    override fun add(key: String, value: BigDecimal): MediaEncoderMap {
-        generator.writeNumberField(key, value)
+    override fun add(key: String, value: Number): MediaEncoderMap {
+        generator.writeFieldName(key)
+        writeNumber(value)
         return this
     }
 

@@ -1,8 +1,5 @@
 package se.ltu.emapal.compute.util.media
 
-import java.math.BigDecimal
-import java.math.BigInteger
-
 /**
  * Media entity map encoder.
  */
@@ -13,17 +10,8 @@ interface MediaEncoderMap {
     /** Adds named `boolean` value to map. */
     fun add(key: String, value: Boolean): MediaEncoderMap
 
-    /** Adds named `long` value to map. */
-    fun add(key: String, value: Long): MediaEncoderMap
-
-    /** Adds named [BigInteger] value to map. */
-    fun add(key: String, value: BigInteger): MediaEncoderMap
-
-    /** Adds named `double` value to map. */
-    fun add(key: String, value: Double): MediaEncoderMap
-
-    /** Adds named [BigDecimal] value to map. */
-    fun add(key: String, value: BigDecimal): MediaEncoderMap
+    /** Adds named [Number] value to map. */
+    fun add(key: String, value: Number): MediaEncoderMap
 
     /** Adds named [String] value to map. */
     fun add(key: String, value: String): MediaEncoderMap
