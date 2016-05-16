@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="@drawable/region"
+    android:background="@drawable/region_primary_light"
     android:orientation="vertical"
     android:paddingBottom="@dimen/view_vertical_padding"
     android:paddingLeft="@dimen/view_horizontal_padding"
