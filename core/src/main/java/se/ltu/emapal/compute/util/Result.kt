@@ -14,6 +14,20 @@ sealed class Result<out T, E : Throwable> {
         override fun <U> apply(f: (T) -> Result<U, E>) = f(value)
         override fun <U> map(f: (T) -> U): Result<U, E> = Result.Success(f(value))
         override fun unwrap() = value
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+            if (other?.javaClass != javaClass) {
+                return false
+            }
+            other as Success<*, *>
+            return value == other.value
+        }
+
+        override fun hashCode() = value?.hashCode() ?: 0
+        override fun toString() = "Result.Success(value=$value)"
     }
 
     /** A failed result. */
@@ -21,6 +35,20 @@ sealed class Result<out T, E : Throwable> {
         override fun <U> apply(f: (T) -> Result<U, E>): Result<U, E> = Result.Failure(error)
         override fun <U> map(f: (T) -> U): Result<U, E> = Result.Failure(error)
         override fun unwrap() = throw error
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+            if (other?.javaClass != javaClass) {
+                return false
+            }
+            other as Failure<*, *>
+            return error == other.error
+        }
+
+        override fun hashCode() = error.hashCode()
+        override fun toString() = "Result.Failure(error=$error)"
     }
 
     /** Applies function [f] to value, if a value is available. */
