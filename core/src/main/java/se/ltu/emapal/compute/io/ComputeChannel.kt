@@ -30,7 +30,7 @@ class ComputeChannel(
         private val decoder: (InputStream) -> Result<MediaDecoder, IOException>,
         private val byteChannel: ByteChannel
 ) : Channel {
-    private val buffer = ByteBuffer.allocate(32 * 1024 * 1024)
+    private val buffer = ByteBuffer.allocate(BUFFER_SIZE)
 
     /** Creates [ComputeChannel] using JSON as message encoding. */
     constructor(byteChannel: ByteChannel) : this(
@@ -97,9 +97,15 @@ class ComputeChannel(
             return byteChannel.isOpen
         }
     }
+
     override fun close() {
         synchronized(buffer) {
             byteChannel.close()
         }
+    }
+
+    companion object {
+        /** The size of the internal [ByteBuffer] used when reading and writing messages. */
+        val BUFFER_SIZE = 32 * 1024 * 1024
     }
 }
