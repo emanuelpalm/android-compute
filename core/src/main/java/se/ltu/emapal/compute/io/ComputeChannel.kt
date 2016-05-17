@@ -4,7 +4,7 @@ import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
 import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncodableException
-import se.ltu.emapal.compute.util.media.json.JsonMediaConverter
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import se.ltu.emapal.compute.util.nio.ByteBufferInputStream
 import se.ltu.emapal.compute.util.nio.ByteBufferOutputStream
 import java.io.IOException
@@ -34,8 +34,8 @@ class ComputeChannel(
 
     /** Creates [ComputeChannel] using JSON as message encoding. */
     constructor(byteChannel: ByteChannel) : this(
-            { encodable, output -> JsonMediaConverter.encode(encodable, output) },
-            { JsonMediaConverter.decode(it) },
+            { encodable, output -> JacksonMediaConverter.encode(encodable, output) },
+            { JacksonMediaConverter.decode(it) },
             byteChannel
     )
 

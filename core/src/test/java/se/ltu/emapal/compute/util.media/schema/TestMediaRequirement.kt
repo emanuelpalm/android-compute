@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets
 
 import org.junit.Assert.*
 import se.ltu.emapal.compute.util.media.MediaDecoders
-import se.ltu.emapal.compute.util.media.json.JsonMediaConverter
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 
 class TestMediaRequirement {
     @Test
@@ -32,7 +32,7 @@ class TestMediaRequirement {
     @Test
     fun shouldEncodeCorrectly() {
         val requirement = MediaRequirement({ it.toLong() <= 100 }, "maximum", 100)
-        val json = JsonMediaConverter.encode(requirement.encodable).unwrap().toString(StandardCharsets.UTF_8)
+        val json = JacksonMediaConverter.encode(requirement.encodable).unwrap().toString(StandardCharsets.UTF_8)
         assertEquals("{\"maximum\":[\"100\"]}", json)
     }
 }

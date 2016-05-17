@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util.media.json
+package se.ltu.emapal.compute.util.media.jackson
 
 import org.junit.Test
 
@@ -6,13 +6,14 @@ import se.ltu.emapal.compute.util.media.MediaDecoder
 
 import org.junit.Assert.*
 import se.ltu.emapal.compute.util.Result
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
 /**
  * Only briefly tests JSON decoding as a complement to the tests in TestMediaTranscoding.
  */
-class TestJsonMediaDecoder {
+class TestJacksonMediaDecoderJson {
     @Test
     fun shouldDecodeNull() {
         decode("[null]", { decoder ->
@@ -40,7 +41,7 @@ class TestJsonMediaDecoder {
             assertEquals((-1).toShort(), list[0].toShort())
             assertEquals(2, list[1].toInt())
             assertEquals(3L, list[2].toLong())
-            assertEquals(4, list[3].toBigInteger().intValueExact())
+            assertEquals(4, list[3].toBigInteger().toInt())
         })
     }
 
@@ -108,7 +109,7 @@ class TestJsonMediaDecoder {
     }
 
     private fun decode(input: String, decoderConsumer: (MediaDecoder) -> Unit) {
-        val result = JsonMediaConverter.decode(ByteArrayInputStream(input.toByteArray()))
+        val result = JacksonMediaConverter.decode(ByteArrayInputStream(input.toByteArray()))
         decoderConsumer(when (result) {
             is Result.Success -> result.value
             is Result.Failure -> throw result.error

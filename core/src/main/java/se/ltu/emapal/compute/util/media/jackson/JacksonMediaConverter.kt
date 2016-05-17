@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util.media.json
+package se.ltu.emapal.compute.util.media.jackson
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -10,10 +10,11 @@ import java.io.*
 
 /**
  * Provides JSON conversion utilities.
+ *
+ * @param factory Jackson format factory used by encoder/decoder classes.
  */
-object JsonMediaConverter {
-    /** Jackson JSON factory used by encoder/decoder classes. */
-    private val factory by lazy { JsonFactory() }
+object JacksonMediaConverter {
+    val factory by lazy { JsonFactory() }
 
     /** Decodes provided byte array, returning [MediaDecoder] if successful. */
     fun decode(bytes: ByteArray): Result<MediaDecoder, IOException> {
@@ -27,7 +28,7 @@ object JsonMediaConverter {
         try {
             val objectMapper = ObjectMapper(factory)
             val node = objectMapper.readTree(input)
-            return Result.Success(JsonMediaDecoder(node))
+            return Result.Success(JacksonMediaDecoder(node))
 
         } catch (e: IOException) {
             return Result.Failure(e)
@@ -55,7 +56,7 @@ object JsonMediaConverter {
     /** Encodes provided encodable, writing any results to output stream. */
     fun encode(encodable: (MediaEncoder) -> Unit, output: OutputStream): Result<Void?, IOException> {
         try {
-            JsonMediaEncoder(factory.createGenerator(output)).use { encoder ->
+            JacksonMediaEncoder(factory.createGenerator(output)).use { encoder ->
                 encodable(encoder)
             }
             return Result.Success(null)

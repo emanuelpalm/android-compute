@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util.media.json
+package se.ltu.emapal.compute.util.media.jackson
 
 import com.fasterxml.jackson.core.JsonGenerator
 import se.ltu.emapal.compute.util.media.MediaEncoder
@@ -12,7 +12,7 @@ import java.math.BigInteger
 /**
  * Encodes encodable objects as JSON.
  */
-internal class JsonMediaEncoder(
+internal class JacksonMediaEncoder(
         private val generator: JsonGenerator
 ) : MediaEncoder, MediaEncoderList, MediaEncoderMap, Closeable {
 
@@ -68,7 +68,10 @@ internal class JsonMediaEncoder(
     }
 
     override fun add(value: ByteArray?): MediaEncoderList {
-        generator.writeBinary(value)
+        if (value != null)
+            generator.writeBinary(value)
+        else
+            generator.writeNull()
         return this
     }
 
@@ -117,7 +120,11 @@ internal class JsonMediaEncoder(
     }
 
     override fun add(key: String, value: ByteArray?): MediaEncoderMap {
-        generator.writeBinaryField(key, value)
+        if (value != null)
+            generator.writeBinaryField(key, value)
+        else
+            generator.writeNullField(key)
+
         return this
     }
 

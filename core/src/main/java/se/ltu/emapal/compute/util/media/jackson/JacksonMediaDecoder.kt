@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util.media.json
+package se.ltu.emapal.compute.util.media.jackson
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeType
@@ -9,7 +9,7 @@ import java.util.*
 /**
  * Decodes JSON objects.
  */
-internal class JsonMediaDecoder(private val node: JsonNode) : MediaDecoder {
+internal class JacksonMediaDecoder(private val node: JsonNode) : MediaDecoder {
     override val type: MediaDecoder.Type
         get() = when (node.nodeType) {
             JsonNodeType.NULL -> MediaDecoder.Type.NULL
@@ -41,7 +41,7 @@ internal class JsonMediaDecoder(private val node: JsonNode) : MediaDecoder {
         if (other?.javaClass != javaClass) {
             return false
         }
-        other as JsonMediaDecoder
+        other as JacksonMediaDecoder
         return node == other.node
     }
 
@@ -49,7 +49,7 @@ internal class JsonMediaDecoder(private val node: JsonNode) : MediaDecoder {
 
     private class DecoderList(private val jsonArray: JsonNode) : AbstractList<MediaDecoder>() {
         override fun get(index: Int): MediaDecoder? = jsonArray.get(index).let {
-            if (it != null) JsonMediaDecoder(it) else null
+            if (it != null) JacksonMediaDecoder(it) else null
         }
 
         override val size: Int
@@ -62,7 +62,7 @@ internal class JsonMediaDecoder(private val node: JsonNode) : MediaDecoder {
             jsonObject.fields()
                     .asSequence()
                     .fold(HashMap<String, MediaDecoder>(), { map, entry ->
-                        map.put(entry.key, JsonMediaDecoder(entry.value))
+                        map.put(entry.key, JacksonMediaDecoder(entry.value))
                         map
                     })
                     .entries

@@ -9,7 +9,7 @@ import java.math.BigInteger
 
 import org.junit.Assert.*
 import se.ltu.emapal.compute.util.Result
-import se.ltu.emapal.compute.util.media.json.JsonMediaConverter
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.io.*
 import java.nio.charset.StandardCharsets
 
@@ -349,8 +349,8 @@ class TestMediaTranscoding(
         fun parameters(): Collection<Array<Any>> {
             return listOf(
                     arrayOf<Any>(
-                            { bytes: ByteArray -> JsonMediaConverter.decode(bytes) },
-                            { value: (MediaEncoder) -> Unit -> JsonMediaConverter.encode(value) }
+                            { bytes: ByteArray -> JacksonMediaConverter.decode(bytes) },
+                            { value: (MediaEncoder) -> Unit -> JacksonMediaConverter.encode(value) }
                     )
             )
         }

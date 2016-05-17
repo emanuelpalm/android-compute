@@ -3,7 +3,7 @@ package se.ltu.emapal.compute.util.media.schema
 import org.junit.Test
 
 import org.junit.Assert.assertEquals
-import se.ltu.emapal.compute.util.media.json.JsonMediaConverter
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.nio.charset.StandardCharsets
 
 class TestMediaViolation {
@@ -20,7 +20,7 @@ class TestMediaViolation {
     @Test
     fun shouldEncodeCorrectly() {
         val violation = MediaViolation("x", MediaRequirement("range", 10, 100))
-        val json = JsonMediaConverter.encode(violation).unwrap().toString(StandardCharsets.UTF_8)
+        val json = JacksonMediaConverter.encode(violation).unwrap().toString(StandardCharsets.UTF_8)
         assertEquals("{\"entity\":\"x\",\"requirement\":{\"range\":[\"10\",\"100\"]}}", json)
     }
 }

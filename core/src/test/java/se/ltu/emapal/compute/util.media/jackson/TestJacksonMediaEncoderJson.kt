@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util.media.json
+package se.ltu.emapal.compute.util.media.jackson
 
 import org.junit.Test
 
@@ -10,12 +10,13 @@ import org.junit.Assert.assertEquals
 import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncoder
+import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.io.ByteArrayOutputStream
 
 /**
  * Only briefly tests JSON encoding as a complement to the tests in TestMediaTranscoding.
  */
-class TestJsonMediaEncoder {
+class TestJacksonMediaEncoderJson {
     @Test
     fun shouldEncodeNull() {
         encode({
@@ -122,7 +123,7 @@ class TestJsonMediaEncoder {
 
     private fun encode(encoder: (MediaEncoder) -> Unit, expectedOutput: String) {
         val outputStream = ByteArrayOutputStream()
-        val result = JsonMediaConverter.encode(encoder, outputStream)
+        val result = JacksonMediaConverter.encode(encoder, outputStream)
         when (result) {
             is Result.Success -> assertEquals(expectedOutput, outputStream.toByteArray().toString(StandardCharsets.UTF_8))
             is Result.Failure -> throw result.error
