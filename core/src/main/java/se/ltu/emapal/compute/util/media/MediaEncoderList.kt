@@ -23,7 +23,12 @@ interface MediaEncoderList {
     fun add(value: (MediaEncoder) -> Unit): MediaEncoderList
 
     /** Adds [MediaEncodable] value to list. */
-    fun add(value: MediaEncodable?) = add { value?.encodable?.invoke(it) }
+    fun add(value: MediaEncodable?) = add {
+        if (value != null)
+            value.encodable(it)
+        else
+            addNull()
+    }
 
     /** Adds list of values to list. */
     fun addList(encoder: (MediaEncoderList) -> Unit): MediaEncoderList
