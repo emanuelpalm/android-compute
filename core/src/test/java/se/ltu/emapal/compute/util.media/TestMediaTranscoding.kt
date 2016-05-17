@@ -101,7 +101,7 @@ class TestMediaTranscoding(
                     assertEquals(Short.MAX_VALUE, map["a"]!!.toShort())
                     assertEquals(Integer.MAX_VALUE, map["b"]!!.toInt())
                     assertEquals(BigInteger.valueOf(Long.MAX_VALUE), map["c"]!!.toBigInteger())
-                    assertEquals(BigInteger.TEN.shortValueExact(), map["d"]!!.toShort())
+                    assertEquals(BigInteger.TEN.toShort(), map["d"]!!.toShort())
                     assertEquals(10.toShort(), map["e"]!!.toShort())
                 })
     }
