@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class TestComputeContext {
     @Test
     fun shouldRegisterLambdaAndProcessBatch() {
-        val computeContext = ComputeContext()
+        val computeContext = AndroidComputeContext()
 
         val program = "" +
                 "lcm:register(function (batch)\n" +
@@ -31,7 +31,7 @@ class TestComputeContext {
 
     @Test
     fun shouldRegisterBadLambdaAndReturnError() {
-        val computeContext = ComputeContext()
+        val computeContext = AndroidComputeContext()
 
         val registerResult0 = computeContext.register(ComputeLambda(1, "donut()"))
         when (registerResult0) {
@@ -48,7 +48,7 @@ class TestComputeContext {
 
     @Test
     fun shouldPublishLogCalls() {
-        val computeContext = ComputeContext()
+        val computeContext = AndroidComputeContext()
 
         val logCounter = AtomicInteger(0)
         computeContext.WhenLogEntry().let {

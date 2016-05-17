@@ -11,7 +11,7 @@ import se.ltu.emapal.compute.util.Result;
  * A context useful for executing Lua programs.
  */
 @SuppressWarnings({"JniMissingFunction", "unused"})
-public class ComputeContext implements Closeable {
+public class AndroidComputeContext implements Closeable {
     private static final Result.Success<Void, ComputeError> SUCCESS = new Result.Success<>(null);
 
     private final PublishSubject<ComputeLogEntry> logEntryPublishSubject = PublishSubject.create();
@@ -29,9 +29,9 @@ public class ComputeContext implements Closeable {
     private long nativePtr = 0;
 
     /**
-     * Initializes new {@link ComputeContext} instance.
+     * Initializes new {@link AndroidComputeContext} instance.
      */
-    public ComputeContext() {
+    public AndroidComputeContext() {
         construct();
     }
 

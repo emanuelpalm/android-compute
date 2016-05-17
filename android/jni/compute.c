@@ -44,7 +44,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_construct(JNIEnv *env, jobject self) {
+JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_construct(JNIEnv *env, jobject self) {
     ComputeContextState* state = calloc(1, sizeof(ComputeContextState));
     if (state == NULL) {
         ComputeContext_throwOutOfMemoryError(env, "Failed to allocate ComputeContext state memory.");
@@ -66,7 +66,7 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_construct(JNIEn
    ComputeContextState_save(env, self, state);
 }
 
-JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_destroy(JNIEnv *env, jobject self) {
+JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_destroy(JNIEnv *env, jobject self) {
     ComputeContextState *state = ComputeContextState_load(env, self);
     if (state != NULL) {
         lua_close(state->L);
@@ -74,7 +74,7 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_destroy(JNIEnv 
     }
 }
 
-JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBatch(JNIEnv *env, jobject self, jint lambdaId, jint batchId, jbyteArray data) {
+JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_processBatch(JNIEnv *env, jobject self, jint lambdaId, jint batchId, jbyteArray data) {
     // Load state.
     ComputeContextState *state = ComputeContextState_load(env, self);
     if (state == NULL) {
@@ -123,7 +123,7 @@ JNIEXPORT jbyteArray JNICALL Java_se_ltu_emapal_compute_ComputeContext_processBa
     }
 }
 
-JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_ComputeContext_registerLambda(JNIEnv *env, jobject self, jint lambdaId, jstring program) {
+JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_registerLambda(JNIEnv *env, jobject self, jint lambdaId, jstring program) {
     // Load state.
     ComputeContextState *state = ComputeContextState_load(env, self);
     if (state == NULL) {
