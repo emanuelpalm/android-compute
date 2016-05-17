@@ -16,6 +16,8 @@ sealed class Result<T, E : Throwable> {
         override fun <U> map(f: (T) -> U) = Result.Success<U, E>(f(value))
         override fun <F : Throwable> mapError(f: (E) -> F) = Result.Success<T, F>(value)
         override fun unwrap() = value
+        override fun ifValue(f: (T) -> Unit) = f(value)
+        override fun ifError(f: (E) -> Unit) = Unit
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -39,6 +41,8 @@ sealed class Result<T, E : Throwable> {
         override fun <U> map(f: (T) -> U) = Result.Failure<U, E>(error)
         override fun <F : Throwable> mapError(f: (E) -> F) = Result.Failure<T, F>(f(error))
         override fun unwrap() = throw error
+        override fun ifValue(f: (T) -> Unit) = Unit
+        override fun ifError(f: (E) -> Unit) = f(error)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -69,4 +73,10 @@ sealed class Result<T, E : Throwable> {
 
     /** Unwraps result, causing either its value to be returned, or error to be thrown. */
     abstract fun unwrap(): T
+
+    /** Executes provided function only if value is available. */
+    abstract fun ifValue(f: (T) -> Unit)
+
+    /** Executes provided function only if error is available. */
+    abstract fun ifError(f: (E) -> Unit)
 }
