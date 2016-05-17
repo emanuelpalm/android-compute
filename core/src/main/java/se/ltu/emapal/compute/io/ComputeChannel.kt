@@ -44,51 +44,59 @@ class ComputeChannel(
     }
 
     /** Sends [message] over channel and awaits response. */
-    fun write(message: ComputeMessage): Result<ComputeMessage, MediaEncodableException> {
-        synchronized(buffer) {
-            writeUnsafe(message)
-            return readUnsafe()
-        }
-    }
+    fun write(message: ComputeMessage): Result<Void?, IOException> {
+        try {
+            synchronized(buffer) {
+                buffer.rewind()
+                buffer.limit(buffer.capacity())
+                ByteBufferOutputStream(buffer).use {
+                    it.buffer.position(4)
+                    encoder(message, it)
 
-    private fun writeUnsafe(message: ComputeMessage) {
-        ByteBufferOutputStream(buffer).use {
-            it.buffer.position(4)
-            encoder(message, it)
+                    val size = it.buffer.position()
+                    val messageSize = size - 4
+                    it.buffer.position(0)
+                    it.buffer.limit(4)
+                    it.buffer.putInt(messageSize)
 
-            val size = it.buffer.position() - 4
-            it.buffer.position(0)
-            it.buffer.putInt(size)
+                    it.buffer.rewind()
+                    it.buffer.limit(size)
+                    byteChannel.write(it.buffer)
+                }
+            }
+            return Result.Success(null)
 
-            it.buffer.rewind()
-            byteChannel.write(it.buffer)
+        } catch (e: IOException) {
+            return Result.Failure(e)
         }
     }
 
     /** Waits for [ComputeMessage] to be received over channel. */
     fun read(): Result<ComputeMessage, MediaEncodableException> {
-        synchronized(buffer) {
-            return readUnsafe()
-        }
-    }
-
-    private fun readUnsafe(): Result<ComputeMessage, MediaEncodableException> {
-        val size = buffer.limit(4).let {
-            byteChannel.read(it as ByteBuffer)
-            it.int
-        }
-        buffer.rewind()
-        buffer.limit(size).let {
-            byteChannel.read(it as ByteBuffer)
-        }
-        buffer.rewind()
-        ByteBufferInputStream(buffer).use {
-            return decoder(it)
-                    .mapError { MediaEncodableException.wrap(it) }
-                    .apply {
-                        ComputeMessage.decode(it)
-                                .mapError { it as MediaEncodableException }
-                    }
+        try {
+            synchronized(buffer) {
+                buffer.rewind()
+                val size = buffer.limit(4).let {
+                    byteChannel.read(it as ByteBuffer)
+                    it.rewind()
+                    it.int
+                }
+                buffer.rewind()
+                buffer.limit(size).let {
+                    byteChannel.read(it as ByteBuffer)
+                }
+                buffer.rewind()
+                ByteBufferInputStream(buffer).use {
+                    return decoder(it)
+                            .mapError { MediaEncodableException.wrap(it) }
+                            .apply {
+                                ComputeMessage.decode(it)
+                                        .mapError { it as MediaEncodableException }
+                            }
+                }
+            }
+        } catch (e: IOException) {
+            return Result.Failure(MediaEncodableException.wrap(e))
         }
     }
 
