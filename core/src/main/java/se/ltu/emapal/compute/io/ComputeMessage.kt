@@ -109,6 +109,31 @@ abstract class ComputeMessage : MediaEncodable {
             }
         }
 
+
+    override fun toString(): String {
+        return "${javaClass.simpleName}(id=$id, type=$type, body=$body)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other?.javaClass != javaClass) {
+            return false
+        }
+        other as ComputeMessage
+        return id == other.id
+                && type == other.type
+                && body == other.body
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + type
+        result = 31 * result + (body?.hashCode() ?: 0)
+        return result
+    }
+
     companion object {
         private val TYPE_CLIENT_BATCH = 1
         private val TYPE_CLIENT_ERROR = 2
