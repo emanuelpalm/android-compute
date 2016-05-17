@@ -91,7 +91,10 @@ class ComputeChannel(
                             .mapError { MediaEncodableException.wrap(it) }
                             .apply {
                                 ComputeMessage.decode(it)
-                                        .mapError { it as MediaEncodableException }
+                                        .mapError {
+                                            @Suppress("USELESS_CAST")
+                                            (it as MediaEncodableException)
+                                        }
                             }
                 }
             }
