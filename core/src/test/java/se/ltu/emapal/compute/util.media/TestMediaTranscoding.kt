@@ -378,6 +378,10 @@ class TestMediaTranscoding(
                     arrayOf<Any>(
                             { bytes: ByteArray -> JacksonMediaConverter.JSON.decode(bytes) },
                             { value: (MediaEncoder) -> Unit -> JacksonMediaConverter.JSON.encode(value) }
+                    ),
+                    arrayOf<Any>(
+                            { bytes: ByteArray -> JacksonMediaConverter.SMILE.decode(bytes) },
+                            { value: (MediaEncoder) -> Unit -> JacksonMediaConverter.SMILE.encode(value) }
                     )
             )
         }
