@@ -8,9 +8,7 @@ import java.nio.charset.StandardCharsets
 
 import org.junit.Assert.assertEquals
 import se.ltu.emapal.compute.util.Result
-import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncoder
-import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.io.ByteArrayOutputStream
 
 /**
