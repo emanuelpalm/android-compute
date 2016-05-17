@@ -10,6 +10,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-smile:$jackson_version"
+    compile 'io.reactivex:rxkotlin:0.55.0'
 
     testCompile 'junit:junit:4.12'
 }
