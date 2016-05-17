@@ -1,6 +1,7 @@
 package se.ltu.emapal.compute;
 
-import java.io.Closeable;
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 
 import rx.Observable;
@@ -11,7 +12,7 @@ import se.ltu.emapal.compute.util.Result;
  * A context useful for executing Lua programs.
  */
 @SuppressWarnings({"JniMissingFunction", "unused"})
-public class AndroidComputeContext implements Closeable {
+public class AndroidComputeContext implements ComputeContext {
     private static final Result.Success<Void, ComputeError> SUCCESS = new Result.Success<>(null);
 
     private final PublishSubject<ComputeLogEntry> logEntryPublishSubject = PublishSubject.create();
@@ -35,10 +36,9 @@ public class AndroidComputeContext implements Closeable {
         construct();
     }
 
-    /**
-     * Processes provided batch, producing a new containing the result.
-     */
-    public Result<ComputeBatch, ComputeError> process(final ComputeBatch batch) {
+    @NonNull
+    @Override
+    public Result<ComputeBatch, ComputeError> process(@NonNull final ComputeBatch batch) {
         final int lambdaId = batch.getLambdaId();
         final int batchId = batch.getBatchId();
         final byte[] inData = batch.getData();
@@ -50,10 +50,9 @@ public class AndroidComputeContext implements Closeable {
         }
     }
 
-    /**
-     * Registers given lambda in compute context, allowing it to later be used to process batches.
-     */
-    public Result<Void, ComputeError> register(final ComputeLambda lambda) {
+    @NonNull
+    @Override
+    public Result<Void, ComputeError> register(@NonNull final ComputeLambda lambda) {
         final int lambdaId = lambda.getLambdaId();
         final String program = lambda.getProgram();
         synchronized (lock) {
@@ -64,10 +63,8 @@ public class AndroidComputeContext implements Closeable {
         }
     }
 
-    /**
-     * Observable pushing new log entries whenever the {@code lcm:log()} function is called by an
-     * executed lambda.
-     */
+    @NonNull
+    @Override
     public Observable<ComputeLogEntry> whenLogEntry() {
         return logEntryPublishSubject;
     }
