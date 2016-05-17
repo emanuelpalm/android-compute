@@ -392,11 +392,8 @@ interface MediaSchema : MediaEncodable {
     }
 
     companion object {
-        private val NULL = TypeNull()
-        private val ANY = TypeAny()
-
         /** Creates new [MediaSchema] verifying null values.  */
-        fun typeNull(): TypeNull = NULL
+        fun typeNull(): TypeNull = TypeNull()
 
         /** Creates new [MediaSchema] verifying booleans.  */
         fun typeBoolean(): TypeBoolean = TypeBoolean()
@@ -417,6 +414,6 @@ interface MediaSchema : MediaEncodable {
         fun typeMap(): TypeMap = TypeMap()
 
         /** Creates new [MediaSchema] verifying any values.  */
-        fun typeAny(): TypeAny = ANY
+        fun typeAny(): TypeAny = TypeAny()
     }
 }
