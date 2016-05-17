@@ -1,5 +1,6 @@
 package se.ltu.emapal.compute.util.media.schema
 
+import org.junit.Assert.*
 import org.junit.Test
 
 import java.math.BigDecimal
@@ -8,8 +9,6 @@ import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.HashMap
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
 import se.ltu.emapal.compute.util.media.MediaDecoders
@@ -37,45 +36,41 @@ class TestMediaSchema {
                                     }
                                 }, "is_color"))))
 
-        assertEquals(
-                Result.Failure<MediaDecoder, MediaSchemaException>(MediaSchemaException(
-                        MediaViolation("", MediaRequirement("type", "MAP"))
-                )),
-                schema.verify(MediaDecoders.ofText("string")))
+        assertViolations(schema,
+                setOf(MediaViolation("", MediaRequirement("type", "MAP"))),
+                MediaDecoders.ofText("string"))
 
-        assertEquals(
-                Result.Failure<MediaDecoder, MediaSchemaException>(MediaSchemaException(
+        assertViolations(schema,
+                setOf(
                         MediaViolation("age", MediaRequirement("optional", "false")),
                         MediaViolation("colors", MediaRequirement("optional", "false")),
-                        MediaViolation("name", MediaRequirement("optional", "false"))
-                )),
-                schema.verify(MediaDecoders.ofMap(HashMap())))
+                        MediaViolation("name", MediaRequirement("optional", "false"))),
+                MediaDecoders.ofMap(HashMap()))
 
-        assertEquals(
-                Result.Failure<MediaDecoder, MediaSchemaException>(MediaSchemaException(
+        assertViolations(schema,
+                setOf(
                         MediaViolation("name", MediaRequirement("type", "TEXT")),
                         MediaViolation("title", MediaRequirement("type", "TEXT")),
                         MediaViolation("age", MediaRequirement("type", "NUMBER")),
-                        MediaViolation("colors", MediaRequirement("type", "LIST"))
-                )),
-                schema.verify(MediaDecoders.ofMap(object : HashMap<String, MediaDecoder>() {
+                        MediaViolation("colors", MediaRequirement("type", "LIST"))),
+                MediaDecoders.ofMap(object : HashMap<String, MediaDecoder>() {
                     init {
                         put("name", MediaDecoders.ofNumber(10))
                         put("title", MediaDecoders.ofBoolean(false))
                         put("age", MediaDecoders.ofText("old"))
                         put("colors", MediaDecoders.ofNull())
                     }
-                })))
+                }))
 
-        assertEquals(
-                Result.Failure<MediaDecoder, MediaSchemaException>(MediaSchemaException(
+        assertViolations(schema,
+                setOf(
                         MediaViolation("title", MediaRequirement("regex", "mr|mrs|miss|dr")),
                         MediaViolation("age", MediaRequirement("maximum", "99")),
                         MediaViolation("colors[0]", MediaRequirement("is_color")),
                         MediaViolation("colors[1]", MediaRequirement("is_color")),
                         MediaViolation("party", MediaRequirement("expected", "false"))
-                )),
-                schema.verify(MediaDecoders.ofMap(object : HashMap<String, MediaDecoder>() {
+                ),
+                MediaDecoders.ofMap(object : HashMap<String, MediaDecoder>() {
                     init {
                         put("name", MediaDecoders.ofText("Jones"))
                         put("title", MediaDecoders.ofText("phd"))
@@ -85,7 +80,7 @@ class TestMediaSchema {
                                 MediaDecoders.ofText("red"))))
                         put("party", MediaDecoders.ofText("Yellow"))
                     }
-                })))
+                }))
 
         assertTrue(
                 schema.verify(MediaDecoders.ofMap(object : HashMap<String, MediaDecoder>() {
@@ -101,8 +96,16 @@ class TestMediaSchema {
         )
     }
 
+    private fun assertViolations(schema: MediaSchema, expectedViolations: Set<MediaViolation>, data: MediaDecoder) {
+        schema.verify(data).let {
+            it.ifValue { fail("Failure expected.") }
+            it.ifError {
+                assertEquals(expectedViolations, it.violations.toSet())
+            }
+        }
+    }
+
     @Test
-    @Throws(Throwable::class)
     fun shouldEncodeCorrectly() {
         val schema = MediaSchema.typeList()
                 .setSize(5)
