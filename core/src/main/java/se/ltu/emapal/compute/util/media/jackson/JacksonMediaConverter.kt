@@ -2,6 +2,7 @@ package se.ltu.emapal.compute.util.media.jackson
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.smile.SmileFactory
 import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
 import se.ltu.emapal.compute.util.media.MediaEncodable
@@ -68,6 +69,11 @@ class JacksonMediaConverter private constructor(private val factory: JsonFactory
         /** [JacksonMediaConverter] for managing JSON data. */
         val JSON by lazy {
             JacksonMediaConverter(JsonFactory())
+        }
+
+        /** [JacksonMediaConverter] for managing SMILE data. */
+        val SMILE by lazy {
+            JacksonMediaConverter(SmileFactory())
         }
     }
 }
