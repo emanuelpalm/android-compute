@@ -68,7 +68,7 @@ public class AndroidComputeContext implements Closeable {
      * Observable pushing new log entries whenever the {@code lcm:log()} function is called by an
      * executed lambda.
      */
-    public Observable<ComputeLogEntry> WhenLogEntry() {
+    public Observable<ComputeLogEntry> whenLogEntry() {
         return logEntryPublishSubject;
     }
 

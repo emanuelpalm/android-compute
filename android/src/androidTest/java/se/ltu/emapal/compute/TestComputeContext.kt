@@ -51,7 +51,7 @@ class TestComputeContext {
         val computeContext = AndroidComputeContext()
 
         val logCounter = AtomicInteger(0)
-        computeContext.WhenLogEntry().let {
+        computeContext.whenLogEntry().let {
             it.skip(0).take(1)
                     .subscribe {
                         logCounter.incrementAndGet()
