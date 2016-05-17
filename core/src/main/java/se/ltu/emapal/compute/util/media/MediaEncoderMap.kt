@@ -23,7 +23,10 @@ interface MediaEncoderMap {
     fun add(key: String, value: (MediaEncoder) -> Unit): MediaEncoderMap
 
     /** Adds [MediaEncodable] value to list. */
-    fun add(key: String, value: MediaEncodable?): MediaEncoderMap = add(key, { value?.encodable?.invoke(it) })
+    fun add(key: String, value: MediaEncodable?): MediaEncoderMap = if (value != null)
+        add(key, { value.encodable(it) })
+    else
+        addNull(key)
 
     /** Adds named list of values to map. */
     fun addList(key: String, encoder: (MediaEncoderList) -> Unit): MediaEncoderMap
