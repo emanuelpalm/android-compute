@@ -25,18 +25,45 @@ class TestMediaTranscoding(
     @Test
     fun shouldTranscodeNull() {
         transcode(
-                { it.encodeList({ it.addNull() }) },
                 {
-                    val value = it.toList()[0]
-                    assertNotNull(value)
-                    assertEquals(MediaDecoder.Type.NULL, value.type)
+                    it.encodeList({
+                        it
+                                .addNull()
+                                .add(null as Boolean?)
+                                .add(null as Number?)
+                                .add(null as String?)
+                                .add(null as ByteArray?)
+                                .add(null as MediaEncodable?)
+                    })
+                },
+                {
+                    val list = it.toList()
+                    assertEquals(6, list.size)
+
+                    list.forEach {
+                        assertNotNull(it)
+                        assertEquals(MediaDecoder.Type.NULL, it.type)
+                    }
                 })
         transcode(
-                { it.encodeMap({ it.addNull("key") }) },
                 {
-                    val value = it.toMap()["key"]
-                    assertNotNull(value)
-                    assertEquals(MediaDecoder.Type.NULL, value!!.type)
+                    it.encodeMap({
+                        it
+                                .addNull("K0")
+                                .add("K1", null as Boolean?)
+                                .add("K2", null as Number?)
+                                .add("K3", null as String?)
+                                .add("K4", null as ByteArray?)
+                                .add("K5", null as MediaEncodable?)
+                    })
+                },
+                {
+                    val map = it.toMap()
+                    assertEquals(6, map.size)
+
+                    map.forEach {
+                        assertEquals(MediaDecoder.Type.NULL, it.value.type)
+                    }
                 })
     }
 
