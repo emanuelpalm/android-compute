@@ -55,8 +55,8 @@ data class ComputeLogEntry(
                         ComputeLogEntry(
                                 UnixTime.ofMilliseconds(decoderMap["tim"]!!.toLong()),
                                 decoderMap["lid"]!!.toInt(),
-                                decoderMap["lid"]!!.toInt(),
-                                decoderMap["lua"]!!.toText()
+                                decoderMap["bid"]!!.toInt(),
+                                decoderMap["msg"]!!.toText()
                         )
                     }
         }
