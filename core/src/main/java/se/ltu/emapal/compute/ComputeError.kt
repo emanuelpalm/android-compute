@@ -3,6 +3,7 @@ package se.ltu.emapal.compute
 import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
 import se.ltu.emapal.compute.util.media.MediaEncodable
+import se.ltu.emapal.compute.util.media.MediaEncodableException
 import se.ltu.emapal.compute.util.media.MediaEncoder
 import se.ltu.emapal.compute.util.media.schema.MediaSchema
 import se.ltu.emapal.compute.util.media.schema.MediaSchemaException
@@ -10,7 +11,7 @@ import se.ltu.emapal.compute.util.media.schema.MediaSchemaException
 /**
  * Signifies a failure to perform some compute action.
  */
-class ComputeError(val code: Int, message: String) : RuntimeException(message), MediaEncodable {
+class ComputeError(val code: Int, message: String) : MediaEncodableException(message) {
     override val encodable: (MediaEncoder) -> Unit
         get() = {
             it.encodeMap {
