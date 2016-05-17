@@ -2,7 +2,6 @@ package se.ltu.emapal.compute
 
 import se.ltu.emapal.compute.util.Result
 import se.ltu.emapal.compute.util.media.MediaDecoder
-import se.ltu.emapal.compute.util.media.MediaEncodable
 import se.ltu.emapal.compute.util.media.MediaEncodableException
 import se.ltu.emapal.compute.util.media.MediaEncoder
 import se.ltu.emapal.compute.util.media.schema.MediaSchema
