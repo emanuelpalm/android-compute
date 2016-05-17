@@ -123,7 +123,7 @@ class TestJacksonMediaEncoderJson {
 
     private fun encode(encoder: (MediaEncoder) -> Unit, expectedOutput: String) {
         val outputStream = ByteArrayOutputStream()
-        val result = JacksonMediaConverter.encode(encoder, outputStream)
+        val result = JacksonMediaConverter.JSON.encode(encoder, outputStream)
         when (result) {
             is Result.Success -> assertEquals(expectedOutput, outputStream.toByteArray().toString(StandardCharsets.UTF_8))
             is Result.Failure -> throw result.error

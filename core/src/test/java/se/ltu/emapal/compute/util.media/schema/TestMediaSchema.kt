@@ -118,7 +118,7 @@ class TestMediaSchema {
                         .setMinimum(BigDecimal.valueOf(1000))
                         .setMaximum(BigDecimal.valueOf(2000)))
 
-        val json = JacksonMediaConverter.encode(schema.encodable).unwrap().toString(StandardCharsets.UTF_8)
+        val json = JacksonMediaConverter.JSON.encode(schema.encodable).unwrap().toString(StandardCharsets.UTF_8)
         assertEquals("{\"type\":\"LIST\",\"optional\":false,\"requirements\":[{\"size\":[\"5\"]}],\"elements\":{\"0\":{\"type\":\"NULL\",\"optional\":false},\"1\":{\"type\":\"BOOLEAN\",\"optional\":false},\"2\":{\"type\":\"NUMBER\",\"optional\":false,\"requirements\":[{\"maximum\":[\"20.0\"]},{\"minimum\":[\"10.0\"]}]},\"3\":{\"type\":\"NUMBER\",\"optional\":false,\"requirements\":[{\"maximum\":[\"200\"]},{\"minimum\":[\"100\"]}]},\"4\":{\"type\":\"NUMBER\",\"optional\":false,\"requirements\":[{\"maximum\":[\"2000\"]},{\"minimum\":[\"1000\"]}]}}}", json)
     }
 }

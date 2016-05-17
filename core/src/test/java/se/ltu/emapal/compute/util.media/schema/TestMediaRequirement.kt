@@ -32,7 +32,7 @@ class TestMediaRequirement {
     @Test
     fun shouldEncodeCorrectly() {
         val requirement = MediaRequirement({ it.toLong() <= 100 }, "maximum", 100)
-        val json = JacksonMediaConverter.encode(requirement.encodable).unwrap().toString(StandardCharsets.UTF_8)
+        val json = JacksonMediaConverter.JSON.encode(requirement.encodable).unwrap().toString(StandardCharsets.UTF_8)
         assertEquals("{\"maximum\":[\"100\"]}", json)
     }
 }

@@ -349,8 +349,8 @@ class TestMediaTranscoding(
         fun parameters(): Collection<Array<Any>> {
             return listOf(
                     arrayOf<Any>(
-                            { bytes: ByteArray -> JacksonMediaConverter.decode(bytes) },
-                            { value: (MediaEncoder) -> Unit -> JacksonMediaConverter.encode(value) }
+                            { bytes: ByteArray -> JacksonMediaConverter.JSON.decode(bytes) },
+                            { value: (MediaEncoder) -> Unit -> JacksonMediaConverter.JSON.encode(value) }
                     )
             )
         }

@@ -109,7 +109,7 @@ class TestJacksonMediaDecoderJson {
     }
 
     private fun decode(input: String, decoderConsumer: (MediaDecoder) -> Unit) {
-        val result = JacksonMediaConverter.decode(ByteArrayInputStream(input.toByteArray()))
+        val result = JacksonMediaConverter.JSON.decode(ByteArrayInputStream(input.toByteArray()))
         decoderConsumer(when (result) {
             is Result.Success -> result.value
             is Result.Failure -> throw result.error

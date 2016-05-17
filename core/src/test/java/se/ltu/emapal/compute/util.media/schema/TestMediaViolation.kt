@@ -20,7 +20,7 @@ class TestMediaViolation {
     @Test
     fun shouldEncodeCorrectly() {
         val violation = MediaViolation("x", MediaRequirement("range", 10, 100))
-        val json = JacksonMediaConverter.encode(violation).unwrap().toString(StandardCharsets.UTF_8)
+        val json = JacksonMediaConverter.JSON.encode(violation).unwrap().toString(StandardCharsets.UTF_8)
         assertEquals("{\"entity\":\"x\",\"requirement\":{\"range\":[\"10\",\"100\"]}}", json)
     }
 }

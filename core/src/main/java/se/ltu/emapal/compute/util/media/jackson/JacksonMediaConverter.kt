@@ -13,9 +13,7 @@ import java.io.*
  *
  * @param factory Jackson format factory used by encoder/decoder classes.
  */
-object JacksonMediaConverter {
-    val factory by lazy { JsonFactory() }
-
+class JacksonMediaConverter private constructor(private val factory: JsonFactory) {
     /** Decodes provided byte array, returning [MediaDecoder] if successful. */
     fun decode(bytes: ByteArray): Result<MediaDecoder, IOException> {
         ByteArrayInputStream(bytes).use { input ->
@@ -63,6 +61,13 @@ object JacksonMediaConverter {
 
         } catch (e: IOException) {
             return Result.Failure(e)
+        }
+    }
+
+    companion object {
+        /** [JacksonMediaConverter] for managing JSON data. */
+        val JSON by lazy {
+            JacksonMediaConverter(JsonFactory())
         }
     }
 }

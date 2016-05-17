@@ -34,8 +34,8 @@ class ComputeChannel(
 
     /** Creates [ComputeChannel] using JSON as message encoding. */
     constructor(byteChannel: ByteChannel) : this(
-            { encodable, output -> JacksonMediaConverter.encode(encodable, output) },
-            { JacksonMediaConverter.decode(it) },
+            { encodable, output -> JacksonMediaConverter.JSON.encode(encodable, output) },
+            { JacksonMediaConverter.JSON.decode(it) },
             byteChannel
     )
 
