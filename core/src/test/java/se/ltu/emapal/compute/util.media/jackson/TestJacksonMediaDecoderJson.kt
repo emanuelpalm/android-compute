@@ -6,7 +6,6 @@ import se.ltu.emapal.compute.util.media.MediaDecoder
 
 import org.junit.Assert.*
 import se.ltu.emapal.compute.util.Result
-import se.ltu.emapal.compute.util.media.jackson.JacksonMediaConverter
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
