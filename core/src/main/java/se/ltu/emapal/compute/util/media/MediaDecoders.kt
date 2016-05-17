@@ -26,10 +26,10 @@ object MediaDecoders {
     /** Creates new media decoder from [ByteArray]. */
     fun ofBlob(byteArray: ByteArray): MediaDecoder = TypeBlob(byteArray)
 
-    /** Creates new media decoder from [java.util.List]. */
+    /** Creates new media decoder from [List]. */
     fun ofList(list: List<MediaDecoder>): MediaDecoder = TypeList(list)
 
-    /** Creates new media decoder from [java.util.Map]. */
+    /** Creates new media decoder from [Map]. */
     fun ofMap(map: Map<String, MediaDecoder>): MediaDecoder = TypeMap(map)
 
     /**
