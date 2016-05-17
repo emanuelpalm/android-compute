@@ -21,6 +21,25 @@ class ComputeError(val code: Int, message: String) : MediaEncodableException(mes
             }
         }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as ComputeError
+
+        if (code != other.code) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return code
+    }
+
+    override fun toString(): String {
+        return "ComputeError(code=$code)"
+    }
+
     companion object {
         private val decoderSchema = MediaSchema.typeMap()
                 .schemaEntry("cod", MediaSchema.typeNumber())
