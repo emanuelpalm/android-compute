@@ -159,7 +159,7 @@ abstract class ComputeMessage : MediaEncodable {
                         val decoderMap = it.toMap()
                         val id = decoderMap["mid"]!!.toInt()
                         val type = decoderMap["typ"]!!.toInt()
-                        val body = decoderMap["body"]!!
+                        val body = decoderMap["bdy"]!!
 
                         when (type) {
                             TYPE_CLIENT_BATCH -> ComputeBatch.decode(body).map { ClientBatch(id, it) }
