@@ -19,15 +19,13 @@ class UnixTime private constructor(private val milliseconds: Long) {
     fun toDate() = Date(toMilliseconds())
 
     /** Converts time into the amount of milliseconds since the Unix 1970 epoch. */
-    fun toMilliseconds(): Long = milliseconds
+    fun toMilliseconds() = milliseconds
 
-    /** Creates new time provided amount of milliseconds added to this time. */
-    fun plusMilliseconds(milliseconds: Long) = ofMilliseconds(toMilliseconds() + milliseconds)
+    /** Creates new time of provided duration added to this time. */
+    operator fun plus(duration: Duration) = ofMilliseconds(toMilliseconds() + duration.toMilliseconds())
 
-    /** Creates new time provided amount of seconds added to this time. */
-    fun plusSeconds(seconds: Long) = plusMilliseconds(seconds * 1000)
-
-    fun minus(time: UnixTime) = toMilliseconds() - time.toMilliseconds()
+    /** Removes provided time from this time and returns duration, which may be negative. */
+    operator fun minus(time: UnixTime) = Duration.ofMilliseconds(toMilliseconds() - time.toMilliseconds())
 
     override fun equals(other: Any?): Boolean{
         if (this === other) {
