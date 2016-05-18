@@ -127,7 +127,7 @@ class ComputeClientTcp : ComputeClient {
                             connect(key)
 
                         } else if (key.isReadable) {
-                            read(key)
+                            receive(key)
                         }
                     }
                     true
@@ -151,7 +151,7 @@ class ComputeClientTcp : ComputeClient {
     }
 
     /** Reads any pending incoming socket messages. */
-    private fun read(key: SelectionKey) {
+    private fun receive(key: SelectionKey) {
         if (key.channel() !== socket) {
             throw IllegalStateException("key.channel() !== socket")
         }
