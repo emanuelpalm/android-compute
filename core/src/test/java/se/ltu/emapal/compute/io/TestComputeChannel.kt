@@ -19,7 +19,7 @@ class TestComputeChannel {
         transcieve(ComputeMessage.ClientError(2, ComputeError(1234, "Noes!")))
         transcieve(ComputeMessage.ClientExit(3))
         transcieve(ComputeMessage.ClientLogEntry(4, ComputeLogEntry(111, 222, "Surprise!")))
-        transcieve(ComputeMessage.ClientOK(5))
+        transcieve(ComputeMessage.ClientImAlive(5))
     }
 
     @Test
@@ -27,7 +27,7 @@ class TestComputeChannel {
         transcieve(ComputeMessage.ServiceBatch(1, ComputeBatch(111, 222, "hello".toByteArray())))
         transcieve(ComputeMessage.ServiceExit(2))
         transcieve(ComputeMessage.ServiceLambda(3, ComputeLambda(111, "lcm:register(lambda)")))
-        transcieve(ComputeMessage.ServiceOK(4))
+        transcieve(ComputeMessage.ServiceImAlive(4))
     }
 
     private fun transcieve(message: ComputeMessage) {

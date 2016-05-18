@@ -49,9 +49,9 @@ abstract class ComputeMessage : MediaEncodable {
             get() = logEntry
     }
 
-    /** From client: Request confirmation. */
-    class ClientOK(override val id: Int) : ComputeMessage() {
-        override val type = TYPE_CLIENT_OK
+    /** From client: Used to determine connection health. */
+    class ClientImAlive(override val id: Int) : ComputeMessage() {
+        override val type = TYPE_CLIENT_IM_ALIVE
 
         override val body: MediaEncodable?
             get() = null
@@ -81,9 +81,9 @@ abstract class ComputeMessage : MediaEncodable {
             get() = lambda
     }
 
-    /** From service: Request confirmation. */
-    class ServiceOK(override val id: Int) : ComputeMessage() {
-        override val type = TYPE_SERVICE_OK
+    /** From service: Used to determine connection health. */
+    class ServiceImAlive(override val id: Int) : ComputeMessage() {
+        override val type = TYPE_SERVICE_IM_ALIVE
 
         override val body: MediaEncodable?
             get() = null
@@ -139,11 +139,11 @@ abstract class ComputeMessage : MediaEncodable {
         private val TYPE_CLIENT_ERROR = 2
         private val TYPE_CLIENT_EXIT = 3
         private val TYPE_CLIENT_LOG_ENTRY = 4
-        private val TYPE_CLIENT_OK = 5
+        private val TYPE_CLIENT_IM_ALIVE = 5
         private val TYPE_SERVICE_BATCH = 6
         private val TYPE_SERVICE_EXIT = 7
         private val TYPE_SERVICE_LAMBDA = 8
-        private val TYPE_SERVICE_OK = 9
+        private val TYPE_SERVICE_IM_ALIVE = 9
 
         private val decoderSchema = MediaSchema.typeMap()
                 .schemaEntry("mid", MediaSchema.typeNumber())
@@ -166,12 +166,12 @@ abstract class ComputeMessage : MediaEncodable {
                             TYPE_CLIENT_ERROR -> ComputeError.decode(body).map { ClientError(id, it) }
                             TYPE_CLIENT_EXIT -> Result.Success(ClientExit(id))
                             TYPE_CLIENT_LOG_ENTRY -> ComputeLogEntry.decode(body).map { ClientLogEntry(id, it) }
-                            TYPE_CLIENT_OK -> Result.Success(ClientOK(id))
+                            TYPE_CLIENT_IM_ALIVE -> Result.Success(ClientImAlive(id))
 
                             TYPE_SERVICE_BATCH -> ComputeBatch.decode(body).map { ServiceBatch(id, it) }
                             TYPE_SERVICE_EXIT -> Result.Success(ServiceExit(id))
                             TYPE_SERVICE_LAMBDA -> ComputeLambda.decode(body).map { ServiceLambda(id, it) }
-                            TYPE_SERVICE_OK -> Result.Success(ServiceOK(id))
+                            TYPE_SERVICE_IM_ALIVE -> Result.Success(ServiceImAlive(id))
 
                             else -> Result.Failure(MediaSchemaException(
                                     MediaViolation("body", MediaRequirement("type_is_valid"))
