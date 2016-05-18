@@ -24,28 +24,12 @@ interface ComputeClient : Closeable {
     fun whenBatch(): Observable<ComputeBatch>
 
     /** Publishes generated errors. */
-    fun whenError(): Observable<Throwable>
+    fun whenException(): Observable<Throwable>
 
     /** Publishes received lambdas. */
     fun whenLambda(): Observable<ComputeLambda>
 
     /** Publishes client status changes. */
-    fun whenStatus(): Observable<Status>
+    fun whenStatus(): Observable<ComputeClientStatus>
 
-    /**
-     * Client status.
-     */
-    enum class Status {
-        /** Client is currently connected to service. */
-        CONNECTED,
-
-        /** Client is currently attempting to connect to service. */
-        CONNECTING,
-
-        /** Client is not currently connected to service. */
-        DISCONNECTED,
-
-        /** Client was connected to a service, which terminated the connection. */
-        TERMINATED
-    }
 }
