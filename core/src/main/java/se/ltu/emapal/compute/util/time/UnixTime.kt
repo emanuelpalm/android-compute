@@ -1,4 +1,4 @@
-package se.ltu.emapal.compute.util
+package se.ltu.emapal.compute.util.time
 
 import java.util.*
 
@@ -21,6 +21,14 @@ class UnixTime private constructor(private val milliseconds: Long) {
     /** Converts time into the amount of milliseconds since the Unix 1970 epoch. */
     fun toMilliseconds(): Long = milliseconds
 
+    /** Creates new time provided amount of milliseconds added to this time. */
+    fun plusMilliseconds(milliseconds: Long) = ofMilliseconds(toMilliseconds() + milliseconds)
+
+    /** Creates new time provided amount of seconds added to this time. */
+    fun plusSeconds(seconds: Long) = plusMilliseconds(seconds * 1000)
+
+    fun minus(time: UnixTime) = toMilliseconds() - time.toMilliseconds()
+
     override fun equals(other: Any?): Boolean{
         if (this === other) {
             return true
@@ -28,7 +36,6 @@ class UnixTime private constructor(private val milliseconds: Long) {
         if (other?.javaClass != javaClass) {
             return false
         }
-
         other as UnixTime
         return milliseconds == other.milliseconds
     }
