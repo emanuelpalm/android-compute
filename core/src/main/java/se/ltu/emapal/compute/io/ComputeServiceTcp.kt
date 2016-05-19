@@ -119,7 +119,7 @@ internal class ComputeServiceTcp : ComputeService {
 
     /** Polls socket, looking for opportunity to finish connecting, reading and writing. */
     private fun poll() {
-        if ((UnixTime.now() - deadline.get()) < Duration.ZERO) {
+        if ((deadline.get() - UnixTime.now()) < Duration.ZERO) {
             throw SocketTimeoutException()
         }
         synchronized(socket) {
