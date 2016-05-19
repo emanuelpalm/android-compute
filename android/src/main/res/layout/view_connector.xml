@@ -31,13 +31,28 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/field_uri"
+            android:id="@+id/field_address"
             style="@style/Widget.AppCompat.EditText"
+            android:nextFocusDown="@+id/field_port"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/label_master_service_uri_ip"
-            android:inputType="textUri" />
+            android:hint="@string/label_domain_ip"
+            android:inputType="textUri"
+            android:lines="1"
+            android:maxLength="255"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/field_port"
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_port"
+            android:inputType="number"
+            android:lines="1"
+            android:maxLength="5"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/button_connect"

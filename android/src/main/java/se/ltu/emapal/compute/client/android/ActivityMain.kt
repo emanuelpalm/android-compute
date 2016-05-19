@@ -14,10 +14,10 @@ class ActivityMain : AppCompatActivity() {
 
         view_connector.listener?.let {
 
-            it.whenConnect.subscribe { uri ->
+            it.whenConnect.subscribe { addressPair ->
                 Snackbar.make(
                         view_connector,
-                        applicationContext.getString(R.string.text_connected_to_s, uri),
+                        applicationContext.getString(R.string.text_connected_to_ss, addressPair.first, addressPair.second),
                         Snackbar.LENGTH_LONG
                 ).show()
                 view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
@@ -31,10 +31,10 @@ class ActivityMain : AppCompatActivity() {
                         .start()
             }
 
-            it.whenDisconnect.subscribe { uri ->
+            it.whenDisconnect.subscribe { addressPair ->
                 Snackbar.make(
                         view_connector,
-                        applicationContext.getString(R.string.text_disconnected_from_s, uri),
+                        applicationContext.getString(R.string.text_disconnected_from_ss, addressPair.first, addressPair.second),
                         Snackbar.LENGTH_LONG
                 ).show()
                 view_connector.setState(ViewConnector.State.SHOW_CONNECT)

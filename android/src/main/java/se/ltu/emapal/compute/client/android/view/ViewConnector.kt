@@ -32,7 +32,7 @@ class ViewConnector : LinearLayout {
             it as LayoutInflater
             it.inflate(R.layout.view_connector, this, true)
         }
-        field_uri.setOnKeyListener { view, code, event ->
+        field_port.setOnKeyListener { view, code, event ->
             if (event.action == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER) {
                 triggerAction()
                 true
@@ -49,18 +49,18 @@ class ViewConnector : LinearLayout {
                     State.SHOW_CONNECT -> {
                         text_connect_title.visibility = VISIBLE
                         text_connect_description.visibility = VISIBLE
-                        field_uri.isEnabled = true
+                        field_address.isEnabled = true
                         button_connect.isEnabled = true
                         button_connect.text = context.getText(R.string.action_connect)
                     }
                     State.SHOW_CONNECTING -> {
-                        field_uri.isEnabled = false
+                        field_address.isEnabled = false
                         button_connect.isEnabled = false
                     }
                     State.SHOW_DISCONNECT -> {
                         text_connect_title.visibility = GONE
                         text_connect_description.visibility = GONE
-                        field_uri.isEnabled = false
+                        field_address.isEnabled = false
                         button_connect.isEnabled = true
                         button_connect.text = context.getText(R.string.action_disconnect)
                     }
@@ -73,14 +73,16 @@ class ViewConnector : LinearLayout {
     private fun triggerAction() {
         listener?.let {
             val state = it.onStateChangeSubject.value
+            val pair = Pair(field_address.text.toString(), field_port.text.toString())
             when (state) {
-                State.SHOW_CONNECT -> it.onConnectSubject.onNext(field_uri.text.toString())
-                State.SHOW_DISCONNECT -> it.onDisconnectSubject.onNext(field_uri.text.toString())
+                State.SHOW_CONNECT -> it.onConnectSubject.onNext(pair)
+                State.SHOW_DISCONNECT -> it.onDisconnectSubject.onNext(pair)
                 else -> throw IllegalStateException("Action triggered while in $state state.")
             }
         }
     }
 
+    /** Sets view state. */
     fun setState(state: State) {
         listener?.onStateChangeSubject?.onNext(state)
     }
@@ -95,16 +97,16 @@ class ViewConnector : LinearLayout {
     }
 
     class Listener {
-        internal val onConnectSubject = PublishSubject<String>()
-        internal val onDisconnectSubject = PublishSubject<String>()
+        internal val onConnectSubject = PublishSubject<Pair<String, String>>()
+        internal val onDisconnectSubject = PublishSubject<Pair<String, String>>()
         internal val onStateChangeSubject = ReplaySubject.createWithSize<State>(1)
 
         /** Fires event containing URI field value whenever the connect button is clicked. */
-        val whenConnect: Observable<String>
+        val whenConnect: Observable<Pair<String, String>>
             get() = onConnectSubject
 
         /** Fires event containing URI field value whenever the disconnect button is clicked. */
-        val whenDisconnect: Observable<String>
+        val whenDisconnect: Observable<Pair<String, String>>
             get() = onDisconnectSubject
     }
 }
