@@ -17,6 +17,9 @@
     <string name="text_connected_to_ss">Connected to %1$s:%2$s.</string>
     <string name="text_connecting_to_ss">Connecting to %1$s:%2$s.</string>
     <string name="text_disconnected_from_ss">Disconnected from %1$s:%2$s.</string>
+    <string name="text_error_address">No valid address provided.</string>
+    <string name="text_error_failed_to_connect_to_ss">Failed to connect to %1$s:%2$s.</string>
+    <string name="text_error_timed_out_connecting_to_ss">Timed out while connecting to %1$s:%2$s.</string>
 
     <string name="title_connect_to_master_service">Connect to Master Service</string>
 </resources>
