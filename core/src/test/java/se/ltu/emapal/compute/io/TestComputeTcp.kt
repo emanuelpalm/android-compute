@@ -129,7 +129,7 @@ class TestComputeTcp {
                         else -> Assert.fail("Client: Unexpected status $it.")
                     }
                 }
-                it.whenException().subscribe {
+                client.whenException().subscribe {
                     Assert.fail(it.message)
                 }
 
