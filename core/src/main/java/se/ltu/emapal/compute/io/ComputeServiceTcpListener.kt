@@ -17,6 +17,9 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Listens for incoming TCP connections and turns any received into [ComputeServiceTcp] objects.
  */
 class ComputeServiceTcpListener : Closeable {
+    private val timeout: Duration
+    private val executorDelay: Duration
+    private val executorInterval: Duration
     private val executor: ScheduledExecutorService
     private val isOwningExecutor: Boolean
     private val isClosed = AtomicBoolean(false)
@@ -31,16 +34,21 @@ class ComputeServiceTcpListener : Closeable {
      * Creates new TCP [ComputeService], scheduling its work using [executor].
      *
      * @param hostAddress The local address at which incoming connections will be accepted.
-     * @param executor Executor service to use for accepting incoming connections.
-     * @param executorDelay Delay after which socket listening is started.
-     * @param executorInterval Interval at which socket listening is scheduled.
+     * @param timeout Duration after which a stale connection times out.
+     * @param executor Executor service to use for handling incoming connections.
+     * @param executorDelay Delay after which socket polling is started.
+     * @param executorInterval Interval at which socket polling is scheduled.
      */
     constructor(
             hostAddress: InetSocketAddress,
+            timeout: Duration = Duration.ofSeconds(30),
             executor: ScheduledExecutorService? = null,
             executorDelay: Duration = Duration.ofMilliseconds(10),
             executorInterval: Duration = Duration.ofMilliseconds(250)
     ) {
+        this.timeout = timeout
+        this.executorDelay = executorDelay
+        this.executorInterval = executorInterval
         if (executor != null) {
             this.executor = executor
             isOwningExecutor = false
@@ -90,7 +98,10 @@ class ComputeServiceTcpListener : Closeable {
         val socket = serverChannel.accept()
         val service = ComputeServiceTcp(
                 socket = socket,
-                executor = this.executor
+                timeout = timeout,
+                executor = this.executor,
+                executorDelay = executorDelay,
+                executorInterval = executorInterval
         )
         whenConnectSubject.onNext(service)
     }
