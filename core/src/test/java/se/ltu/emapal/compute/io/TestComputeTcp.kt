@@ -37,10 +37,10 @@ class TestComputeTcp {
                 executorDelay = Duration.ofMilliseconds(5),
                 executorInterval = Duration.ofMilliseconds(1)
         ).use {
-            it.whenException().subscribe {
+            it.whenException.subscribe {
                 Assert.fail(it.message)
             }
-            it.whenConnect().subscribe() { service ->
+            it.whenConnect.subscribe() { service ->
                 service.whenBatch.subscribe {
                     Assert.assertEquals("Service: Expected only one batch.", serviceReceivedBatches.andIncrement, 0)
                     Assert.assertEquals(ComputeBatch(1, 100, "HELLO".toByteArray()), it)
