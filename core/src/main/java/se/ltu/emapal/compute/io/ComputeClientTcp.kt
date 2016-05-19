@@ -35,6 +35,7 @@ class ComputeClientTcp : ComputeClient {
     private val sendQueue = ConcurrentLinkedQueue<ComputeMessage>()
 
     private val executor: ScheduledExecutorService
+    private val isOwningExecutor: Boolean
     private val isClosed = AtomicBoolean(false)
 
     private val selector: Selector
@@ -62,11 +63,17 @@ class ComputeClientTcp : ComputeClient {
     constructor(
             address: InetSocketAddress,
             timeout: Duration = Duration.ofSeconds(30),
-            executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
+            executor: ScheduledExecutorService? = null,
             executorDelay: Duration = Duration.ofMilliseconds(10),
             executorInterval: Duration = Duration.ofMilliseconds(250)
     ) {
-        this.executor = executor
+        if (executor != null) {
+            this.executor = executor
+            isOwningExecutor = false
+        } else {
+            this.executor = Executors.newSingleThreadScheduledExecutor()
+            isOwningExecutor = true
+        }
         this.timeout = timeout
 
         selector = Selector.open()
@@ -81,7 +88,7 @@ class ComputeClientTcp : ComputeClient {
         deadline = AtomicReference(UnixTime.now() + timeout)
 
         // Schedule polling.
-        executor.scheduleAtFixedRate(
+        this.executor.scheduleAtFixedRate(
                 {
                     try {
                         poll()
@@ -96,7 +103,7 @@ class ComputeClientTcp : ComputeClient {
                 TimeUnit.MILLISECONDS)
 
         // Schedule refreshing.
-        executor.scheduleAtFixedRate(
+        this.executor.scheduleAtFixedRate(
                 {
                     try {
                         refresh()
@@ -220,7 +227,9 @@ class ComputeClientTcp : ComputeClient {
                 whenStatusSubject.onCompleted()
 
             } finally {
-                executor.shutdown()
+                if (isOwningExecutor) {
+                    executor.shutdown()
+                }
                 selector.close()
                 socket.close()
             }

@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 class ComputeServiceTcpListener : Closeable {
     private val executor: ScheduledExecutorService
+    private val isOwningExecutor: Boolean
     private val isClosed = AtomicBoolean(false)
 
     private val selector: Selector
@@ -35,11 +36,17 @@ class ComputeServiceTcpListener : Closeable {
      */
     constructor(
             hostAddress: InetSocketAddress,
-            executor: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor(),
+            executor: ScheduledExecutorService? = null,
             executorDelay: Duration = Duration.ofMilliseconds(10),
             executorInterval: Duration = Duration.ofMilliseconds(250)
     ) {
-        this.executor = executor
+        if (executor != null) {
+            this.executor = executor
+            isOwningExecutor = false
+        } else {
+            this.executor = Executors.newSingleThreadScheduledExecutor()
+            isOwningExecutor = true
+        }
 
         selector = Selector.open()
 
@@ -49,7 +56,7 @@ class ComputeServiceTcpListener : Closeable {
         serverChannel.register(selector, SelectionKey.OP_ACCEPT)
 
         // Schedule accepting.
-        executor.scheduleAtFixedRate(
+        this.executor.scheduleAtFixedRate(
                 {
                     try {
                         poll()
@@ -82,7 +89,7 @@ class ComputeServiceTcpListener : Closeable {
         val socket = serverChannel.accept()
         val service = ComputeServiceTcp(
                 socket = socket,
-                executor = executor
+                executor = this.executor
         )
         whenConnectSubject.onNext(service)
     }
@@ -94,7 +101,9 @@ class ComputeServiceTcpListener : Closeable {
                 whenExceptionSubject.onCompleted()
 
             } finally {
-                executor.shutdown()
+                if (isOwningExecutor) {
+                    executor.shutdown()
+                }
                 selector.close()
                 serverChannel.close()
             }
