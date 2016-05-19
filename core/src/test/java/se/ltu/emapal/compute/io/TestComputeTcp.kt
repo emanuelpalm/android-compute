@@ -44,18 +44,18 @@ class TestComputeTcp {
                 Assert.fail(it.message)
             }
             it.whenConnect().subscribe() { service ->
-                service.whenBatch().subscribe {
+                service.whenBatch.subscribe {
                     Assert.assertEquals("Service: Expected only one batch.", serviceReceivedBatches.andIncrement, 0)
                     Assert.assertEquals(ComputeBatch(1, 100, "HELLO".toByteArray()), it)
                     semaphore.release()
                 }
-                service.whenError().subscribe {
+                service.whenError.subscribe {
                     Assert.assertEquals("Service: Expected only one error.", serviceReceivedErrors.andIncrement, 0)
                     Assert.assertEquals(12345, it.code)
                     Assert.assertEquals("bad", it.message)
                     semaphore.release()
                 }
-                service.whenLogEntry().subscribe {
+                service.whenLogEntry.subscribe {
                     Assert.assertEquals("Service:Expected only one log entry.", serviceReceivedLogEntries.andIncrement, 0)
                     Assert.assertNotNull(it.timestamp)
                     Assert.assertEquals(1, it.lambdaId)
@@ -63,10 +63,10 @@ class TestComputeTcp {
                     Assert.assertEquals("world!", it.message)
                     semaphore.release()
                 }
-                service.whenException().subscribe {
+                service.whenException.subscribe {
                     Assert.fail(it.message)
                 }
-                service.whenStatus().subscribe {
+                service.whenStatus.subscribe {
                     when(it) {
                         ComputeServiceStatus.CONNECTED -> {
                             if (!serviceStatusConnected.compareAndSet(false, true)) {

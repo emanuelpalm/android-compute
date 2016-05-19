@@ -18,18 +18,18 @@ interface ComputeService : Closeable {
     fun submit(lambda: ComputeLambda)
 
     /** Publishes received processed batches. */
-    fun whenBatch(): Observable<ComputeBatch>
+    val whenBatch: Observable<ComputeBatch>
 
     /** Publishes errors reported by client. */
-    fun whenError(): Observable<ComputeError>
+    val whenError: Observable<ComputeError>
 
     /** Publishes generated errors. */
-    fun whenException(): Observable<Throwable>
+    val whenException: Observable<Throwable>
 
     /** Publishes received client log entries. */
-    fun whenLogEntry(): Observable<ComputeLogEntry>
+    val whenLogEntry: Observable<ComputeLogEntry>
 
     /** Publishes service status changes. */
-    fun whenStatus(): Observable<ComputeServiceStatus>
+    val whenStatus: Observable<ComputeServiceStatus>
 
 }

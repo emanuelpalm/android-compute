@@ -188,11 +188,16 @@ internal class ComputeServiceTcp : ComputeService {
         sendQueue.add(ComputeMessage.ServiceLambda(sendCount.incrementAndGet(), lambda))
     }
 
-    override fun whenBatch(): Observable<ComputeBatch> = whenBatchSubject
-    override fun whenError(): Observable<ComputeError> = whenErrorSubject
-    override fun whenException(): Observable<Throwable> = whenExceptionSubject
-    override fun whenLogEntry(): Observable<ComputeLogEntry> = whenLogEntrySubject
-    override fun whenStatus(): Observable<ComputeServiceStatus> = whenStatusSubject
+    override val whenBatch: Observable<ComputeBatch>
+            get() = whenBatchSubject
+    override val whenError: Observable<ComputeError>
+            get() = whenErrorSubject
+    override val whenException: Observable<Throwable>
+            get() = whenExceptionSubject
+    override val whenLogEntry: Observable<ComputeLogEntry>
+            get() = whenLogEntrySubject
+    override val whenStatus: Observable<ComputeServiceStatus>
+            get() = whenStatusSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
