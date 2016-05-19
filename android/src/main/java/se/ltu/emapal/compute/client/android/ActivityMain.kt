@@ -1,8 +1,8 @@
 package se.ltu.emapal.compute.client.android
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
@@ -10,6 +10,8 @@ import se.ltu.emapal.compute.Computer
 import se.ltu.emapal.compute.client.android.view.ViewConnector
 import se.ltu.emapal.compute.io.ComputeClientStatus
 import se.ltu.emapal.compute.util.Result
+import java.net.ConnectException
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.util.concurrent.atomic.AtomicReference
 
@@ -91,8 +93,16 @@ class ActivityMain : AppCompatActivity() {
                 is Result.Failure -> {
                     val resource = when (result.error) {
                         is IllegalArgumentException -> R.string.text_error_address
+                        is ConnectException -> R.string.text_error_failed_to_connect_to_ss
                         is SocketTimeoutException -> R.string.text_error_timed_out_connecting_to_ss
-                        else -> R.string.text_error_failed_to_connect_to_ss
+                        is SocketException -> {
+                            Log.w(javaClass.simpleName, "Failed to connect to service.", result.error)
+                            R.string.text_error_failed_to_connect_to_ss
+                        }
+                        else -> {
+                            Log.e(javaClass.simpleName, "Failed to connect to service.", result.error)
+                            R.string.text_error_failed_to_connect_to_ss
+                        }
                     }
                     showSnackbar(resource, address, port)
 
