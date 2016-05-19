@@ -7,14 +7,11 @@ import se.ltu.emapal.compute.ComputeError
 import se.ltu.emapal.compute.ComputeLambda
 import se.ltu.emapal.compute.ComputeLogEntry
 import se.ltu.emapal.compute.util.time.Duration
-import java.io.Closeable
 import java.net.InetSocketAddress
-import java.util.concurrent.Executors
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicReference
 
 class TestComputeTcp {
     @Test
