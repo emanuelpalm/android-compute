@@ -82,6 +82,7 @@ class ComputeClientTcp : ComputeClient {
         socket.configureBlocking(false)
         socket.register(selector, SelectionKey.OP_CONNECT)
         socket.connect(address)
+        whenStatusSubject.onNext(ComputeClientStatus.CONNECTING)
 
         channel = ComputeChannel(socket)
 
@@ -116,8 +117,6 @@ class ComputeClientTcp : ComputeClient {
                 0,
                 (timeout.toMilliseconds() * 0.9).toLong(),
                 TimeUnit.MILLISECONDS)
-
-        whenStatusSubject.onNext(ComputeClientStatus.CONNECTING)
     }
 
     /** Polls socket, looking for opportunity to finish connecting, reading and writing. */
