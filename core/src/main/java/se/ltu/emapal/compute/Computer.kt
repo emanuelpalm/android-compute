@@ -24,19 +24,19 @@ class Computer(
         contextFactory: () -> ComputeContext,
         contextThreads: Int = 1
 ) : Closeable {
-    val threadPool = Executors.newFixedThreadPool(contextThreads)
-    val threadQueues = Array(contextThreads, { ConcurrentLinkedQueue<(ComputeContext) -> Unit>() })
-    val sharedQueue = ConcurrentLinkedQueue<(ComputeContext) -> Unit>()
-    val isClosed = AtomicBoolean(false)
+    private val threadPool = Executors.newFixedThreadPool(contextThreads)
+    private val threadQueues = Array(contextThreads, { ConcurrentLinkedQueue<(ComputeContext) -> Unit>() })
+    private val sharedQueue = ConcurrentLinkedQueue<(ComputeContext) -> Unit>()
+    private val isClosed = AtomicBoolean(false)
 
-    val whenExceptionSubject = PublishSubject<Pair<Int, Throwable>>()
-    val whenLambdaCountSubject = PublishSubject<Int>()
-    val whenBatchPendingCountSubject = PublishSubject<Int>()
-    val whenBatchProcessedCountSubject = PublishSubject<Int>()
+    private val whenExceptionSubject = PublishSubject<Pair<Int, Throwable>>()
+    private val whenLambdaCountSubject = PublishSubject<Int>()
+    private val whenBatchPendingCountSubject = PublishSubject<Int>()
+    private val whenBatchProcessedCountSubject = PublishSubject<Int>()
 
-    val lambdaCount = AtomicInteger(0)
-    val batchPendingCount = AtomicInteger(0)
-    val batchProcessedCount = AtomicInteger(0)
+    private val lambdaCount = AtomicInteger(0)
+    private val batchPendingCount = AtomicInteger(0)
+    private val batchProcessedCount = AtomicInteger(0)
 
     init {
         // Creates one thread and work queue for each created context.
