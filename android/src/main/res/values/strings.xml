@@ -11,6 +11,7 @@
     <string name="label_pending_batches">Pending Batches</string>
     <string name="label_port">Port</string>
     <string name="label_processed_batches">Processed Batches</string>
+    <string name="label_status">Status</string>
 
     <string name="text_connect_description">Before this device can be used as a compute node, a suitable master service has to be connected to. Please enter the domain name or IP address, and port number, of a trusted compute service and then proceed.</string>
     <string name="text_connected_to_ss">Connected to %1$s:%2$s.</string>
@@ -18,5 +19,4 @@
     <string name="text_disconnected_from_ss">Disconnected from %1$s:%2$s.</string>
 
     <string name="title_connect_to_master_service">Connect to Master Service</string>
-    <string name="label_status">Status</string>
 </resources>
