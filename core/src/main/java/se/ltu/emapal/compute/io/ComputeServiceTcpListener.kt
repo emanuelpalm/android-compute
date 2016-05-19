@@ -81,7 +81,7 @@ class ComputeServiceTcpListener : Closeable {
 
     private fun poll() {
         if (selector.isOpen) {
-            selector.select()
+            selector.selectNow()
             selector.selectedKeys().removeAll { key ->
                 if (key.isValid && key.isAcceptable) {
                     accept(key)

@@ -124,7 +124,7 @@ internal class ComputeServiceTcp : ComputeService {
         }
         synchronized(socket) {
             if (selector.isOpen) {
-                selector.select()
+                selector.selectNow()
                 selector.selectedKeys().removeAll { key ->
                     if (key.isValid && key.isReadable) {
                         receive(key)

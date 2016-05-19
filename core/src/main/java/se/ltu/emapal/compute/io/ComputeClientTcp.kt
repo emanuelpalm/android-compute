@@ -126,7 +126,7 @@ class ComputeClientTcp : ComputeClient {
         }
         synchronized(socket) {
             if (selector.isOpen) {
-                selector.select()
+                selector.selectNow()
                 selector.selectedKeys().removeAll { key ->
                     if (key.isValid) {
                         if (key.isConnectable) {
