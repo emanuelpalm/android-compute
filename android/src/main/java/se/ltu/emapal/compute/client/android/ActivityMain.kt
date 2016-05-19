@@ -22,9 +22,9 @@ class ActivityMain : AppCompatActivity() {
                 ).show()
                 view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
 
-                view_console.alpha = 0.0f
-                view_console.visibility = View.VISIBLE
-                view_console.animate()
+                view_status.alpha = 0.0f
+                view_status.visibility = View.VISIBLE
+                view_status.animate()
                         .alpha(1.0f)
                         .setStartDelay(800)
                         .setDuration(156)
@@ -39,7 +39,7 @@ class ActivityMain : AppCompatActivity() {
                 ).show()
                 view_connector.setState(ViewConnector.State.SHOW_CONNECT)
 
-                view_console.visibility = View.GONE
+                view_status.visibility = View.GONE
             }
 
         }

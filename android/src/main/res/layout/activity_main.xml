@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/view_vertical_margin" />
 
     <se.ltu.emapal.compute.client.android.view.ViewStatus
-        android:id="@+id/view_console"
+        android:id="@+id/view_status"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
