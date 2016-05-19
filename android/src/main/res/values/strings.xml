@@ -5,6 +5,7 @@
     <string name="action_disconnect">Disconnect</string>
     <string name="action_help">Help</string>
 
+    <string name="label_0">0</string>
     <string name="label_domain_ip">Domain/IP</string>
     <string name="label_lambda_count">Lambda Count</string>
     <string name="label_pending_batches">Pending Batches</string>
@@ -18,5 +19,4 @@
 
     <string name="title_connect_to_master_service">Connect to Master Service</string>
     <string name="label_status">Status</string>
-    <string name="text_0">0</string>
 </resources>
