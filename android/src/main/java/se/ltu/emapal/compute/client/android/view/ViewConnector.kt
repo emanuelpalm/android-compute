@@ -50,17 +50,20 @@ class ViewConnector : LinearLayout {
                         text_connect_title.visibility = VISIBLE
                         text_connect_description.visibility = VISIBLE
                         field_address.isEnabled = true
+                        field_port.isEnabled = true
                         button_connect.isEnabled = true
                         button_connect.text = context.getText(R.string.action_connect)
                     }
                     State.SHOW_CONNECTING -> {
                         field_address.isEnabled = false
+                        field_port.isEnabled = false
                         button_connect.isEnabled = false
                     }
                     State.SHOW_DISCONNECT -> {
                         text_connect_title.visibility = GONE
                         text_connect_description.visibility = GONE
                         field_address.isEnabled = false
+                        field_port.isEnabled = false
                         button_connect.isEnabled = true
                         button_connect.text = context.getText(R.string.action_disconnect)
                     }
