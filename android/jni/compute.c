@@ -62,8 +62,8 @@ JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_construc
            .context = state,
            .function = ComputeContext_log,
        },
-   });
-   ComputeContextState_save(env, self, state);
+    });
+    ComputeContextState_save(env, self, state);
 }
 
 JNIEXPORT void JNICALL Java_se_ltu_emapal_compute_AndroidComputeContext_destroy(JNIEnv *env, jobject self) {
