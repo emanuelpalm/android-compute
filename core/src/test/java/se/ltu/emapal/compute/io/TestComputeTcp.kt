@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class TestComputeTcp {
     @Test
     fun shouldConnectToServerAndSendMessages() {
-        // Keeps track of significant events.
+        // Used to count significant events that need to happen before the test is completed.
         val semaphore = Semaphore(0)
 
         val serviceReceivedBatches = AtomicInteger(0)
@@ -34,7 +34,7 @@ class TestComputeTcp {
         ComputeServiceTcpListener(
                 hostAddress = InetSocketAddress(62001),
                 timeout = Duration.ofSeconds(10000),
-                executorDelay = Duration.ofMilliseconds(5),
+                executorDelay = Duration.ofMilliseconds(2),
                 executorInterval = Duration.ofMilliseconds(1)
         ).use {
             it.whenException.subscribe {
@@ -90,7 +90,7 @@ class TestComputeTcp {
             ComputeClientTcp(
                     address = InetSocketAddress(62001),
                     timeout = Duration.ofSeconds(10000),
-                    executorDelay = Duration.ofMilliseconds(10),
+                    executorDelay = Duration.ofMilliseconds(4),
                     executorInterval = Duration.ofMilliseconds(1)
             ).use { client ->
                 client.whenBatch.subscribe {
