@@ -22,6 +22,8 @@ class Duration private constructor(private val milliseconds: Long) {
         return 0
     }
 
+    override fun toString() = "Duration(milliseconds=$milliseconds)"
+
     companion object {
         /** The zero duration. */
         val ZERO = Duration.ofMilliseconds(0)
