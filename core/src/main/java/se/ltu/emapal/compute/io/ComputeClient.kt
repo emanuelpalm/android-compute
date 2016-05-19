@@ -21,15 +21,15 @@ interface ComputeClient : Closeable {
     fun submit(logEntry: ComputeLogEntry)
 
     /** Publishes received batches. */
-    fun whenBatch(): Observable<ComputeBatch>
+    val whenBatch: Observable<ComputeBatch>
 
     /** Publishes generated errors. */
-    fun whenException(): Observable<Throwable>
+    val whenException: Observable<Throwable>
 
     /** Publishes received lambdas. */
-    fun whenLambda(): Observable<ComputeLambda>
+    val whenLambda: Observable<ComputeLambda>
 
     /** Publishes client status changes. */
-    fun whenStatus(): Observable<ComputeClientStatus>
+    val whenStatus: Observable<ComputeClientStatus>
 
 }

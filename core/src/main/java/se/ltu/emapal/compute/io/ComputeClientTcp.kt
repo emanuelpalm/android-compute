@@ -209,10 +209,14 @@ class ComputeClientTcp : ComputeClient {
         sendQueue.add(ComputeMessage.ClientLogEntry(sendCount.incrementAndGet(), logEntry))
     }
 
-    override fun whenBatch(): Observable<ComputeBatch> = whenBatchSubject
-    override fun whenException(): Observable<Throwable> = whenExceptionSubject
-    override fun whenLambda(): Observable<ComputeLambda> = whenLambdaSubject
-    override fun whenStatus(): Observable<ComputeClientStatus> = whenStatusSubject
+    override val whenBatch: Observable<ComputeBatch>
+            get() = whenBatchSubject
+    override val whenException: Observable<Throwable>
+            get() = whenExceptionSubject
+    override val whenLambda: Observable<ComputeLambda>
+            get() = whenLambdaSubject
+    override val whenStatus: Observable<ComputeClientStatus>
+            get() = whenStatusSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {

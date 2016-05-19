@@ -93,12 +93,12 @@ class TestComputeTcp {
                     executorDelay = Duration.ofMilliseconds(10),
                     executorInterval = Duration.ofMilliseconds(1)
             ).use { client ->
-                client.whenBatch().subscribe {
+                client.whenBatch.subscribe {
                     Assert.assertEquals("Client: Expected only one batch.", clientReceivedBatches.andIncrement, 0)
                     Assert.assertEquals(ComputeBatch(1, 100, "hello".toByteArray()), it)
                     semaphore.release()
                 }
-                client.whenLambda().subscribe {
+                client.whenLambda.subscribe {
                     Assert.assertEquals("Client: Expected only one lambda.", clientReceivedLambdas.andIncrement, 0)
                     Assert.assertEquals(ComputeLambda(1, "" +
                             "lcm:register(function (batch)\n" +
@@ -107,7 +107,7 @@ class TestComputeTcp {
                             "end)"), it)
                     semaphore.release()
                 }
-                client.whenStatus().subscribe {
+                client.whenStatus.subscribe {
                     when (it) {
                         ComputeClientStatus.CONNECTING -> if (!clientStatusConnecting.compareAndSet(false, true)) Assert.fail("Client: Already been connecting!")
                         ComputeClientStatus.CONNECTED -> {
@@ -126,7 +126,7 @@ class TestComputeTcp {
                         else -> Assert.fail("Client: Unexpected status $it.")
                     }
                 }
-                client.whenException().subscribe {
+                client.whenException.subscribe {
                     Assert.fail(it.message)
                 }
 
