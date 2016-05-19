@@ -42,7 +42,7 @@ class UnixTime private constructor(private val milliseconds: Long) {
         return milliseconds.hashCode()
     }
 
-    override fun toString(): String = toDate().toString()
+    override fun toString(): String = "UnixTime(toDate()=${toDate().toString()})"
 
     companion object {
         /** Gets current time. */
