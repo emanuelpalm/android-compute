@@ -18,36 +18,28 @@ class ViewStatus : LinearLayout {
     /** Context/attribute/style constructor. */
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    /** Allows getting and settings [ViewStatus] properties. */
-    val subject = if (!isInEditMode) Subject() else null
-
     init {
         context.getSystemService(Context.LAYOUT_INFLATER_SERVICE).let {
             it as LayoutInflater
             it.inflate(R.layout.view_status, this, true)
         }
+    }
 
-        subject?.let {
-            it.whenLambdaCount.subscribe {
-                text_status_lambda_count.text = it.toString()
-            }
-            it.whenPendingBatchCount.subscribe {
-                text_status_pending_batch_count.text = it.toString()
-            }
-            it.whenProcessedBatchCount.subscribe {
-                text_status_processed_batch_count.text = it.toString()
-            }
+    var lambdaCount: Int
+        get() = text_status_lambda_count.text.toString().toInt()
+        set(value) {
+            text_status_lambda_count.text = value.toString()
         }
-    }
 
-    class Subject {
-        /** Registered lambda count. */
-        val whenLambdaCount = PublishSubject<Int>()
+    var pendingBatchCount: Int
+        get() = text_status_pending_batch_count.text.toString().toInt()
+        set(value) {
+            text_status_pending_batch_count.text = value.toString()
+        }
 
-        /** Pending batch count. */
-        val whenPendingBatchCount = PublishSubject<Int>()
-
-        /** Processed batch count. */
-        val whenProcessedBatchCount = PublishSubject<Int>()
-    }
+    var processedBatchCount: Int
+        get() = text_status_processed_batch_count.text.toString().toInt()
+        set(value) {
+            text_status_processed_batch_count.text = value.toString()
+        }
 }
