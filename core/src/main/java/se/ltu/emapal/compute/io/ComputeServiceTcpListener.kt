@@ -1,5 +1,6 @@
 package se.ltu.emapal.compute.io
 
+import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import se.ltu.emapal.compute.util.time.Duration
 import java.io.Closeable
@@ -93,6 +94,12 @@ class ComputeServiceTcpListener : Closeable {
         )
         whenConnectSubject.onNext(service)
     }
+
+    /** Publishes generated exceptions. */
+    fun whenException(): Observable<Throwable> = whenExceptionSubject
+
+    /** Publishes successful connection attempts. */
+    fun whenConnect(): Observable<ComputeService> = whenConnectSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
