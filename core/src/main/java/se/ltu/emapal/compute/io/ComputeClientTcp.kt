@@ -14,10 +14,7 @@ import java.net.SocketTimeoutException
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.SocketChannel
-import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -194,6 +191,34 @@ class ComputeClientTcp : ComputeClient {
             if (socket.isConnected) {
                 channel.write(ComputeMessage.ClientImAlive(sendCount.incrementAndGet()))
             }
+        }
+    }
+
+    /** Waits synchronously for compute client to become connected for given duration. */
+    fun awaitConnectionFor(duration: Duration) {
+        when (whenStatusSubject.value) {
+            ComputeClientStatus.CONNECTED -> return
+            ComputeClientStatus.CONNECTING -> Unit
+            else -> throw IllegalStateException("Cannot await connection while in state ${whenStatusSubject.value}.")
+        }
+
+        val semaphore = Semaphore(0)
+        val atomicException = AtomicReference<Throwable>(null)
+        whenStatusSubject.subscribe {
+            if (it == ComputeClientStatus.CONNECTED) {
+                semaphore.release()
+            }
+        }
+        whenExceptionSubject.subscribe {
+            atomicException.set(it)
+            semaphore.release()
+        }
+        if (!semaphore.tryAcquire(duration.toMilliseconds(), TimeUnit.MILLISECONDS)) {
+            throw SocketTimeoutException()
+        }
+        val exception = atomicException.get()
+        if (exception != null) {
+            throw exception
         }
     }
 
