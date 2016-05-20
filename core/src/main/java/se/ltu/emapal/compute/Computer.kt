@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class Computer(
         val client: ComputeClient,
         contextFactory: () -> ComputeContext,
-        contextThreads: Int = 1
+        private val contextThreads: Int = 1
 ) : Closeable {
     private val threadPool = Executors.newFixedThreadPool(contextThreads)
     private val threadQueues = Array(contextThreads, { ConcurrentLinkedQueue<(ComputeContext) -> Unit>() })
@@ -102,7 +102,7 @@ class Computer(
 
     /** Publishes the amount of registered lambda functions. */
     val whenLambdaCount: Observable<Int>
-        get() = whenLambdaCountSubject
+        get() = whenLambdaCountSubject.map { it / contextThreads }
 
     /** Publishes the amount of received batches pending for processing. */
     val whenBatchPendingCount: Observable<Int>
