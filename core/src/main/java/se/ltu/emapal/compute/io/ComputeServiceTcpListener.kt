@@ -115,11 +115,11 @@ class ComputeServiceTcpListener : Closeable {
 
     /** Publishes generated exceptions. */
     val whenException: Observable<Throwable>
-            get() = whenExceptionSubject
+        get() = whenExceptionSubject
 
     /** Publishes successful connection attempts. */
     val whenConnect: Observable<ComputeService>
-            get() = whenConnectSubject
+        get() = whenConnectSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
