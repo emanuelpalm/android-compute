@@ -67,10 +67,16 @@ class ComputeServiceTcpListener : Closeable {
         // Schedule accepting.
         this.executor.scheduleAtFixedRate(
                 {
+                    if (isClosed.get()) {
+                        return@scheduleAtFixedRate
+                    }
                     try {
                         poll()
+
                     } catch (e: Throwable) {
-                        whenExceptionSubject.onNext(e)
+                        if (e !is InterruptedException) {
+                            whenExceptionSubject.onNext(e)
+                        }
                         close()
                     }
                 },
@@ -123,7 +129,7 @@ class ComputeServiceTcpListener : Closeable {
 
             } finally {
                 if (isOwningExecutor) {
-                    executor.shutdown()
+                    executor.awaitTermination(3, TimeUnit.SECONDS)
                 }
                 selector.close()
                 serverChannel.close()
