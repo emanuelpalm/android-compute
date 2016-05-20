@@ -85,34 +85,30 @@ internal class ComputeServiceTcp : ComputeService {
 
         deadline = AtomicReference(UnixTime.now() + timeout)
 
-        // Schedule polling.
-        this.executor.scheduleAtFixedRate(
-                {
-                    try {
-                        poll()
-                    } catch (e: Throwable) {
-                        whenExceptionSubject.onNext(e)
-                        whenStatusSubject.onNext(ComputeServiceStatus.DISRUPTED)
-                        close()
-                    }
-                },
-                executorDelay.toMilliseconds(),
-                executorInterval.toMilliseconds(),
-                TimeUnit.MILLISECONDS)
+        schedule(executorDelay, executorInterval) { poll() }
+        schedule(executorDelay, timeout * 0.9) { refresh() }
+    }
 
-        // Schedule refreshing.
+    private fun schedule(delay: Duration, interval: Duration, lambda: () -> Unit) {
         this.executor.scheduleAtFixedRate(
                 {
-                    try {
-                        refresh()
-                    } catch (e: Throwable) {
-                        whenExceptionSubject.onNext(e)
-                        whenStatusSubject.onNext(ComputeServiceStatus.DISRUPTED)
+                    if (!isClosed.get()) {
+                        try {
+                            lambda()
+
+                        } catch (e: Throwable) {
+                            if (e !is InterruptedException) {
+                                whenExceptionSubject.onNext(e)
+                                whenStatusSubject.onNext(ComputeServiceStatus.DISRUPTED)
+                            }
+                            close()
+                        }
+                    } else {
                         close()
                     }
                 },
-                0,
-                (timeout.toMilliseconds() * 0.9).toLong(),
+                delay.toMilliseconds(),
+                interval.toMilliseconds(),
                 TimeUnit.MILLISECONDS)
     }
 
@@ -189,15 +185,15 @@ internal class ComputeServiceTcp : ComputeService {
     }
 
     override val whenBatch: Observable<ComputeBatch>
-            get() = whenBatchSubject
+        get() = whenBatchSubject
     override val whenError: Observable<ComputeError>
-            get() = whenErrorSubject
+        get() = whenErrorSubject
     override val whenException: Observable<Throwable>
-            get() = whenExceptionSubject
+        get() = whenExceptionSubject
     override val whenLogEntry: Observable<ComputeLogEntry>
-            get() = whenLogEntrySubject
+        get() = whenLogEntrySubject
     override val whenStatus: Observable<ComputeServiceStatus>
-            get() = whenStatusSubject
+        get() = whenStatusSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
