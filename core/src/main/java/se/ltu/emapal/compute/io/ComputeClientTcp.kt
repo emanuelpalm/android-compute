@@ -88,11 +88,17 @@ class ComputeClientTcp : ComputeClient {
         // Schedule polling.
         this.executor.scheduleAtFixedRate(
                 {
+                    if (isClosed.get()) {
+                        return@scheduleAtFixedRate
+                    }
                     try {
                         poll()
+
                     } catch (e: Throwable) {
-                        whenExceptionSubject.onNext(e)
-                        whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                        if (e !is InterruptedException) {
+                            whenExceptionSubject.onNext(e)
+                            whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                        }
                         close()
                     }
                 },
@@ -103,11 +109,17 @@ class ComputeClientTcp : ComputeClient {
         // Schedule refreshing.
         this.executor.scheduleAtFixedRate(
                 {
+                    if (isClosed.get()) {
+                        return@scheduleAtFixedRate
+                    }
                     try {
                         refresh()
+
                     } catch (e: Throwable) {
-                        whenExceptionSubject.onNext(e)
-                        whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                        if (e !is InterruptedException) {
+                            whenExceptionSubject.onNext(e)
+                            whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                        }
                         close()
                     }
                 },
@@ -256,7 +268,7 @@ class ComputeClientTcp : ComputeClient {
 
             } finally {
                 if (isOwningExecutor) {
-                    executor.shutdown()
+                    executor.awaitTermination(1, TimeUnit.SECONDS)
                 }
                 selector.close()
                 socket.close()
