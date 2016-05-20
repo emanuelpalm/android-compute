@@ -53,16 +53,6 @@ class ActivityMain : AppCompatActivity() {
                 is Result.Success -> {
                     showSnackbar(R.string.text_connected_to_ss, address, port)
 
-                    view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
-
-                    view_status.alpha = 0.0f
-                    view_status.visibility = View.VISIBLE
-                    view_status.animate()
-                            .alpha(1.0f)
-                            .setStartDelay(800)
-                            .setDuration(156)
-                            .start()
-
                     computer.set(result.value)
                     val computer = result.value
 
@@ -78,17 +68,29 @@ class ActivityMain : AppCompatActivity() {
                     computer.client.whenStatus.subscribe {
                         when (it) {
                             ComputeClientStatus.DISRUPTED -> {
+                                showSnackbar(R.string.text_connection_lost_to_ss, address, port)
                                 Log.w(javaClass.simpleName, "Compute client disrupted.")
-                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
                                 view_status.visibility = View.GONE
+                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
                             }
                             ComputeClientStatus.TERMINATED -> {
-                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+                                showSnackbar(R.string.text_connection_closed_by_ss, address, port)
                                 view_status.visibility = View.GONE
+                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
                             }
                             else -> Unit
                         }
                     }
+
+                    view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
+
+                    view_status.alpha = 0.0f
+                    view_status.visibility = View.VISIBLE
+                    view_status.animate()
+                            .alpha(1.0f)
+                            .setStartDelay(800)
+                            .setDuration(156)
+                            .start()
                 }
                 is Result.Failure -> {
                     val resource = when (result.error) {
