@@ -195,6 +195,8 @@ internal class ComputeServiceTcp : ComputeService {
     override val whenStatus: Observable<ComputeServiceStatus>
         get() = whenStatusSubject
 
+    override fun toString(): String = "(${socket.remoteAddress})"
+
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
             try {
