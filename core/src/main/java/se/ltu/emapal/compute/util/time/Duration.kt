@@ -12,6 +12,8 @@ class Duration private constructor(private val milliseconds: Long) {
     /** Converts duration to a, possibly negative, amount of seconds. */
     fun toSeconds() = milliseconds / 1000
 
+    infix operator fun times(other: Double) = Duration((toMilliseconds() * other).toLong())
+
     operator fun compareTo(other: Duration): Int {
         if (milliseconds < other.milliseconds) {
             return -1
