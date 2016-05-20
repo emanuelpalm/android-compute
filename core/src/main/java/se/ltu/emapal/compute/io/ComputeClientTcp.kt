@@ -85,46 +85,30 @@ class ComputeClientTcp : ComputeClient {
 
         deadline = AtomicReference(UnixTime.now() + timeout)
 
-        // Schedule polling.
+        schedule(executorDelay, executorInterval) { poll() }
+        schedule(executorDelay, timeout * 0.9) { refresh() }
+    }
+
+    private fun schedule(delay: Duration, interval: Duration, lambda: () -> Unit) {
         this.executor.scheduleAtFixedRate(
                 {
-                    if (isClosed.get()) {
-                        return@scheduleAtFixedRate
-                    }
-                    try {
-                        poll()
+                    if (!isClosed.get()) {
+                        try {
+                            lambda()
 
-                    } catch (e: Throwable) {
-                        if (e !is InterruptedException) {
-                            whenExceptionSubject.onNext(e)
-                            whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                        } catch (e: Throwable) {
+                            if (e !is InterruptedException) {
+                                whenExceptionSubject.onNext(e)
+                                whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
+                            }
+                            close()
                         }
+                    } else {
                         close()
                     }
                 },
-                executorDelay.toMilliseconds(),
-                executorInterval.toMilliseconds(),
-                TimeUnit.MILLISECONDS)
-
-        // Schedule refreshing.
-        this.executor.scheduleAtFixedRate(
-                {
-                    if (isClosed.get()) {
-                        return@scheduleAtFixedRate
-                    }
-                    try {
-                        refresh()
-
-                    } catch (e: Throwable) {
-                        if (e !is InterruptedException) {
-                            whenExceptionSubject.onNext(e)
-                            whenStatusSubject.onNext(ComputeClientStatus.DISRUPTED)
-                        }
-                        close()
-                    }
-                },
-                0,
-                (timeout.toMilliseconds() * 0.9).toLong(),
+                delay.toMilliseconds(),
+                interval.toMilliseconds(),
                 TimeUnit.MILLISECONDS)
     }
 
@@ -247,13 +231,13 @@ class ComputeClientTcp : ComputeClient {
     }
 
     override val whenBatch: Observable<ComputeBatch>
-            get() = whenBatchSubject
+        get() = whenBatchSubject
     override val whenException: Observable<Throwable>
-            get() = whenExceptionSubject
+        get() = whenExceptionSubject
     override val whenLambda: Observable<ComputeLambda>
-            get() = whenLambdaSubject
+        get() = whenLambdaSubject
     override val whenStatus: Observable<ComputeClientStatus>
-            get() = whenStatusSubject
+        get() = whenStatusSubject
 
     override fun close() {
         if (isClosed.compareAndSet(false, true)) {
