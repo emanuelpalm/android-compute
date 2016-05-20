@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="48"
@@ -18,23 +17,11 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="android.svg"
    enable-background="new"
-   inkscape:export-filename="/home/emanuel/Prog/java/ltu/m7019e/palm-compute/android/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
-   inkscape:export-xdpi="360"
-   inkscape:export-ydpi="360">
+   inkscape:export-filename="/home/emanuel/Prog/java/ltu/m7019e/palm-compute/android/src/main/res/mipmap-mdpi/ic_launcher.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient4359">
-      <stop
-         style="stop-color:#966ef8;stop-opacity:0.2278481"
-         offset="0"
-         id="stop4361" />
-      <stop
-         style="stop-color:#ffaeae;stop-opacity:0.6898734"
-         offset="1"
-         id="stop4363" />
-    </linearGradient>
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
@@ -48,15 +35,6 @@
          stdDeviation="1.653"
          id="feGaussianBlur4340" />
     </filter>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4359"
-       id="linearGradient4365"
-       x1="2"
-       y1="1006.3622"
-       x2="46"
-       y2="1050.3622"
-       gradientUnits="userSpaceOnUse" />
     <filter
        inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
@@ -78,19 +56,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="-161.08086"
-     inkscape:cy="90.486761"
+     inkscape:zoom="3.5602898"
+     inkscape:cx="37.405435"
+     inkscape:cy="30.135787"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="svg2"
      showgrid="false"
-     showguides="true"
+     showguides="false"
      units="px"
-     inkscape:window-width="1855"
-     inkscape:window-height="1056"
-     inkscape:window-x="65"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1">
+     inkscape:window-width="1201"
+     inkscape:window-height="733"
+     inkscape:window-x="426"
+     inkscape:window-y="143"
+     inkscape:window-maximized="0">
     <inkscape:grid
        type="xygrid"
        id="grid3344"
@@ -104,16 +82,16 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
+     inkscape:label="Background"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1004.3622)"
-     style="display:inline">
+     style="display:inline;opacity:0.98999999">
     <rect
        rx="3"
        y="1010.3622"
@@ -123,7 +101,7 @@
        id="rect4240"
        style="opacity:0.2;fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4338)" />
     <rect
-       style="opacity:1;fill:#90357b;fill-opacity:1;stroke:none"
+       style="opacity:1;fill:#9c27b0;fill-opacity:1;stroke:none"
        id="rect4171"
        width="38"
        height="38"
@@ -137,31 +115,23 @@
        id="rect4230"
        inkscape:connector-curvature="0" />
     <path
-       style="opacity:0.07399998;fill:#d485c4;fill-opacity:1;stroke:none"
-       d="M 24,10 A 20,20 0 0 0 5,23.794922 L 5,36.166016 A 20,20 0 0 0 8.8320312,43 L 39.189453,43 A 20,20 0 0 0 43,36.205078 L 43,23.833984 A 20,20 0 0 0 24,10 Z"
-       transform="translate(0,1004.3622)"
-       id="rect4344"
-       inkscape:connector-curvature="0" />
-    <path
        style="opacity:0.2;fill:#512d47;fill-opacity:1;stroke:none"
        d="m 5,39 0,1 c 0,1.662 1.338,3 3,3 l 32,0 c 1.662,0 3,-1.338 3,-3 l 0,-1 c 0,1.662 -1.338,3 -3,3 L 8,42 C 6.338,42 5,40.662 5,39 Z"
        transform="translate(0,1004.3622)"
        id="rect4235"
        inkscape:connector-curvature="0" />
-    <rect
-       rx="3"
-       y="1009.3622"
-       x="5"
-       height="38"
-       width="38"
-       id="rect4357"
-       style="opacity:0.681;fill:url(#linearGradient4365);fill-opacity:1;stroke:none" />
+    <path
+       style="opacity:0.2;fill:#1a237e;fill-opacity:0.99215686;stroke:none"
+       d="M 24,7 A 19,19 0 0 0 5,26 19,19 0 0 0 15.566406,43 l 16.904297,0 A 19,19 0 0 0 43,26 19,19 0 0 0 24,7 Z"
+       transform="translate(0,1004.3622)"
+       id="rect4276"
+       inkscape:connector-curvature="0" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="Hand"
-     style="display:inline">
+     inkscape:label="Logo Old"
+     style="display:none">
     <path
        sodipodi:nodetypes="csccccccscccccc"
        inkscape:connector-curvature="0"
@@ -186,4 +156,20 @@
          x="8"
          y="20" /></text>
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Logo"
+     style="display:none" />
+  <path
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.40000001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 24,17 a 9,9 0 0 0 -9,9 l 0,17 3,0 0,-10.306641 A 9,9 0 0 0 24,35 9,9 0 0 0 31.193359,31.394531 L 28.794922,29.595703 A 6,6 0 0 1 24,32 a 6,6 0 0 1 -6,-6 6,6 0 0 1 6,-6 6,6 0 0 1 4.794922,2.404297 l 2.396484,-1.796875 A 9,9 0 0 0 24,17 Z"
+     id="path4236"
+     inkscape:connector-curvature="0" />
+  <path
+     style="opacity:1;fill:#b052c0;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 31.191406,20.607422 z m 0,0 -2.396484,1.796875 C 29.574786,23.441063 29.997606,24.70267 30,26 c -0.0024,1.29733 -0.425214,2.558937 -1.205078,3.595703 l 2.398437,1.798828 C 32.363007,29.838993 32.996902,27.946218 33,26 32.9959,24.054228 32.361351,22.162181 31.191406,20.607422 Z m -0.002,10.792969 z"
+     id="path4280"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccc" />
 </svg>
