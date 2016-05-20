@@ -1,11 +1,13 @@
 package se.ltu.emapal.compute.client.android
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
+import rx.android.schedulers.AndroidSchedulers
 import se.ltu.emapal.compute.Computer
 import se.ltu.emapal.compute.client.android.view.ViewConnector
 import se.ltu.emapal.compute.io.ComputeClientStatus
@@ -56,31 +58,50 @@ class ActivityMain : AppCompatActivity() {
                     computer.set(result.value)
                     val computer = result.value
 
-                    computer.whenLambdaCount.subscribe { view_status.lambdaCount = it }
-                    computer.whenBatchPendingCount.subscribe { view_status.pendingBatchCount = it }
-                    computer.whenBatchProcessedCount.subscribe { view_status.processedBatchCount = it }
-                    computer.whenException.subscribe {
-                        Log.e(javaClass.simpleName, "Compute context ${it.first} error.", it.second)
-                    }
-                    computer.client.whenException.subscribe {
-                        Log.e(javaClass.simpleName, "Compute client error.", it)
-                    }
-                    computer.client.whenStatus.subscribe {
-                        when (it) {
-                            ComputeClientStatus.DISRUPTED -> {
-                                showSnackbar(R.string.text_connection_lost_to_ss, address, port)
-                                Log.w(javaClass.simpleName, "Compute client disrupted.")
-                                view_status.visibility = View.GONE
-                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+                    computer.whenLambdaCount
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { view_status.lambdaCount = it }
+
+                    computer.whenBatchPendingCount
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { view_status.pendingBatchCount = it }
+
+                    computer.whenBatchProcessedCount
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe { view_status.processedBatchCount = it }
+
+                    computer.whenException
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe {
+                                Log.e(javaClass.simpleName, "Compute context ${it.first} error.", it.second)
+                                stopComputer()
                             }
-                            ComputeClientStatus.TERMINATED -> {
-                                showSnackbar(R.string.text_connection_closed_by_ss, address, port)
-                                view_status.visibility = View.GONE
-                                view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+
+                    computer.client.whenException
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe {
+                                Log.e(javaClass.simpleName, "Compute client error.", it)
+                                stopComputer()
                             }
-                            else -> Unit
-                        }
-                    }
+
+                    computer.client.whenStatus
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe {
+                                when (it) {
+                                    ComputeClientStatus.DISRUPTED -> {
+                                        showSnackbar(R.string.text_connection_lost_to_ss, address, port)
+                                        Log.w(javaClass.simpleName, "Compute client disrupted.")
+                                        view_status.visibility = View.GONE
+                                        view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+                                    }
+                                    ComputeClientStatus.TERMINATED -> {
+                                        showSnackbar(R.string.text_connection_closed_by_ss, address, port)
+                                        view_status.visibility = View.GONE
+                                        view_connector.setState(ViewConnector.State.SHOW_CONNECT)
+                                    }
+                                    else -> Unit
+                                }
+                            }
 
                     view_connector.setState(ViewConnector.State.SHOW_DISCONNECT)
 
@@ -115,6 +136,11 @@ class ActivityMain : AppCompatActivity() {
     }
 
     fun stopComputer() {
-        computer.get()?.close()
+        AsyncTask.execute {
+            computer.get()?.let {
+                it.close()
+                it.client.close()
+            }
+        }
     }
 }
