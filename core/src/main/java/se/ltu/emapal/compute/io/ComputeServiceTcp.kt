@@ -211,7 +211,7 @@ internal class ComputeServiceTcp : ComputeService {
 
             } finally {
                 if (isOwningExecutor) {
-                    executor.shutdown()
+                    executor.awaitTermination(1, TimeUnit.SECONDS)
                 }
                 selector.close()
                 socket.close()
