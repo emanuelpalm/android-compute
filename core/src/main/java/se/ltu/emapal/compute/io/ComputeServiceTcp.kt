@@ -35,6 +35,7 @@ internal class ComputeServiceTcp : ComputeService {
     private val executor: ScheduledExecutorService
     private val isOwningExecutor: Boolean
     private val isClosed = AtomicBoolean(false)
+    private val isClosing: () -> Boolean
 
     private val selector: Selector
     private val socket: SocketChannel
@@ -57,13 +58,15 @@ internal class ComputeServiceTcp : ComputeService {
      * @param executor Executor service to use for sending and receiving messages.
      * @param executorDelay Delay after which socket polling is started.
      * @param executorInterval Interval at which socket polling is scheduled.
+     * @param isClosing Is queried at regular intervals to determine if the service should close.
      */
     constructor(
             socket: SocketChannel,
             timeout: Duration = Duration.ofSeconds(30),
             executor: ScheduledExecutorService? = null,
             executorDelay: Duration = Duration.ofMilliseconds(10),
-            executorInterval: Duration = Duration.ofMilliseconds(250)
+            executorInterval: Duration = Duration.ofMilliseconds(250),
+            isClosing: () -> Boolean = { false }
     ) {
         if (executor != null) {
             this.executor = executor
@@ -72,6 +75,7 @@ internal class ComputeServiceTcp : ComputeService {
             this.executor = Executors.newSingleThreadScheduledExecutor()
             isOwningExecutor = true
         }
+        this.isClosing = isClosing
         this.socket = socket
         this.timeout = timeout
 
@@ -92,7 +96,7 @@ internal class ComputeServiceTcp : ComputeService {
     private fun schedule(delay: Duration, interval: Duration, lambda: () -> Unit) {
         this.executor.scheduleAtFixedRate(
                 {
-                    if (!isClosed.get()) {
+                    if (!isClosing() && !isClosed.get()) {
                         try {
                             lambda()
 

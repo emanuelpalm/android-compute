@@ -101,7 +101,8 @@ class ComputeServiceTcpListener : Closeable {
                 timeout = timeout,
                 executor = this.executor,
                 executorDelay = executorDelay,
-                executorInterval = executorInterval
+                executorInterval = executorInterval,
+                isClosing = { isClosed.get() }
         )
         whenConnectSubject.onNext(service)
     }
