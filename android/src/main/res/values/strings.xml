@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Android/compute</string>
-    <string name="app_name_short">A/compute</string>
+    <string name="app_name">Palm/compute</string>
+    <string name="app_name_short">P/compute</string>
 
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
