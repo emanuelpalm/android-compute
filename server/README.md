@@ -1,3 +1,5 @@
+![icon](/android/src/main/res/mipmap-xxhdpi/ic_launcher.png)
+
 # Palm/compute Server
 
 The server currently consists of a [single file][main], apart from classes
@@ -43,7 +45,8 @@ support.
 
 If wanting to use the command line, some relevant commands are presented below.
 They are all expected to be executed with the repository root folder as current
-working directory.
+working directory. If running on a Windows machine, replace `./gradlew` with
+`gradle.bat`.
 
 **List available server Gradle tasks**
 ```sh
