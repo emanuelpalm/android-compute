@@ -30,9 +30,6 @@ for another one. It has a working Android client, and a prototype server
 implementation. Enough documentation for someone somewhat familiar with Android
 and Java development is given via the links below.
 
-Read more about how to install and run the application client and server via
-the below links.
-
 - [Android Client](/android)
 - [Server](/server)
 
@@ -43,8 +40,7 @@ the below links.
 There are two primary categories of agents in a Palm/compute application,
 namely *clients*, and *services*. A client is any agent able to accept incoming
 *lambdas* and *batches*, and a service is any agent able to submit such to
-known clients. The diagram below illustrates how a service is sending a batch
-with ID 1 to some client, and receiving the result.
+known clients. The diagram below illustrates a service sending a batch to some client and receiving the result.
 
 ![diagram](/design/docs/palm-compute-diagram.png)
 
@@ -63,7 +59,7 @@ other kind of structured data.
 The below Lua program shows what a lambda could look like that accepts and
 uppercases regular text batches. It also shows the use of `lcm:log()`, which
 can be used to send log data to the service that submitted the current batch
-while the lambda program is running.
+while its lambda program is running.
 
 ```lua
 function hello()
