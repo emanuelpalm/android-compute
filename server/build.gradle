@@ -9,7 +9,10 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'kotlin'
+
+mainClassName = "se.ltu.emapal.compute.MainKt"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.1"
