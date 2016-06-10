@@ -10,12 +10,20 @@ import kotlin.system.exitProcess
  * Application main function.
  */
 fun main(args: Array<String>) {
-    if (args.size != 1 || !args[0].matches(Regex("^[0-9]{1,5}$"))) {
+    val port: Int
+    if (args.size < 1) {
+        port = 62000;
+
+    } else if (args.size != 1 || !args[0].matches(Regex("^[0-9]{1,5}$"))) {
         panic("Please provide a valid port number (0-65535) as argument.")
-    }
-    val port = args[0].toInt()
-    if (port > 65536) {
-        panic("Please provide a valid port number (0-65535) as argument.")
+        return;
+
+    } else {
+        port = args[0].toInt()
+        if (port > 65535) {
+            panic("Please provide a valid port number (0-65535) as argument.")
+        }
+        return;
     }
 
     println("Palm/compute server")
@@ -64,6 +72,7 @@ fun main(args: Array<String>) {
     })
 
     println("OK!")
+    println("Listening on port $port for incoming connections.")
 }
 
 fun panic(message: String) {
