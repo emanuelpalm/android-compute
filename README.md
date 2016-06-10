@@ -73,7 +73,7 @@ lcm:register(function (batch)
 end)
 ```
 
-## Building and Installing
+## Building and Running
 
 Instructions are available via the below links.
 
