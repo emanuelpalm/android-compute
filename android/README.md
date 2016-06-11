@@ -16,7 +16,7 @@ which is most 32-bit Android platforms, and the 64-bit x86 platform.
 
 At the heart of the client is the [Computer][cmp] class, which actually is part
 of the [Core][core] library, and not of the actual Android client. An instance
-of this class keeps track a tread of pools, one for each available CPU core,
+of this class keeps track a pool of threads, one for each available CPU core,
 each with its own [AndroidComputeContext][acc]. When the Computer receives new
 work via its [ComputeClientTcp][cclt], it puts that work on a queue, and the
 first free ComputeContext in its thread pool will take it from the queue and
