@@ -17,7 +17,7 @@ Understanding the [Android client][android], at least superficially, before
 diving into the server source code is recommended. If wanting to improve upon
 the existing code used for TCP communication, some grasp of the Java NIO
 [ServerSocketChannel][ssch], [SocketChannel][sch], and [Selector][sel] is
-required, unless this ambition is to replace the NIO TCP code with such that
+required, unless the ambition is to replace the NIO TCP code with such that
 uses some other library.
 
 - **[ComputeChannel][cc]** - Transports byte arrays between client and service.
